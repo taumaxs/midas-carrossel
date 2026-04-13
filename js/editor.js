@@ -5,12 +5,14 @@
 const Editor = {
   selectedElement: null,
   editorPanel: null,
+  editorContent: null,
 
   /**
    * Inicializar editor
    */
   init() {
     this.editorPanel = document.getElementById('editorPanel');
+    this.editorContent = document.getElementById('editorPanelContent');
     this.attachEventListeners();
   },
 
@@ -53,7 +55,7 @@ const Editor = {
    * Mostrar painel de edição
    */
   showEditorPanel(element) {
-    if (!this.editorPanel) return;
+    if (!this.editorPanel || !this.editorContent) return;
 
     const slide = element.closest('.slide');
     if (!slide) return;
@@ -61,7 +63,7 @@ const Editor = {
     const tipo = this.getElementType(element);
     const panel = this.buildEditorPanel(element, tipo);
     
-    this.editorPanel.innerHTML = panel;
+    this.editorContent.innerHTML = panel;
     this.editorPanel.classList.add('open');
 
     // Anexar eventos dos campos
@@ -91,80 +93,88 @@ const Editor = {
    * Construir painel de edição
    */
   buildEditorPanel(element, tipo) {
-    let html = '<div class="ed-title">EDITAR ELEMENTO</div><div class="ed-fields">';
+    const textContent = element.textContent;
+    const fontSize = element.style.fontSize || (tipo === 'titulo' ? '32px' : '13px');
+    const fontSizeNum = parseInt(fontSize);
+    const color = element.style.color || (tipo === 'titulo' ? '#ffffff' : '#888888');
+    const fontFamily = element.style.fontFamily || "'Arial', sans-serif";
+    
+    let html = '';
 
-    if (tipo === 'titulo') {
-      html += `
-        <div class="ed-field">
-          <label>Texto</label>
-          <textarea class="ed-text" data-target="text">${element.textContent}</textarea>
-        </div>
-        <div class="ed-field">
-          <label>Tamanho (px)</label>
-          <input type="range" class="ed-size" min="12" max="72" value="${element.style.fontSize || '32'}" data-target="fontSize">
-          <span>${element.style.fontSize || '32'}px</span>
-        </div>
-        <div class="ed-field">
-          <label>Cor</label>
-          <input type="color" class="ed-color" value="${element.style.color || '#ffffff'}" data-target="color">
-        </div>
-        <div class="ed-field">
-          <label>Fonte</label>
-          <select class="ed-font" data-target="fontFamily">
-            <option value="'Arial', sans-serif">Arial (padrão)</option>
-            <option value="'Georgia', serif">Georgia</option>
-            <option value="'Playfair Display', serif">Playfair Display (elegante)</option>
-            <option value="'Montserrat', sans-serif">Montserrat (moderna)</option>
-            <option value="'Roboto', sans-serif">Roboto (limpa)</option>
-            <option value="'Poppins', sans-serif">Poppins (casual)</option>
-            <option value="'Inter', sans-serif">Inter (tech)</option>
-            <option value="'Ubuntu', sans-serif">Ubuntu (legível)</option>
-            <option value="'Lora', serif">Lora (sérif)</option>
-            <option value="'Barlow Condensed', sans-serif">Barlow Condensed</option>
-            <option value="'Caveat', cursive">Caveat</option>
-          </select>
-        </div>
-      `;
-    } else if (tipo === 'descricao') {
-      html += `
-        <div class="ed-field">
-          <label>Texto</label>
-          <textarea class="ed-text" data-target="text">${element.textContent}</textarea>
-        </div>
-        <div class="ed-field">
-          <label>Tamanho (px)</label>
-          <input type="range" class="ed-size" min="10" max="24" value="${element.style.fontSize || '13'}" data-target="fontSize">
-          <span>${element.style.fontSize || '13'}px</span>
-        </div>
-        <div class="ed-field">
-          <label>Cor</label>
-          <input type="color" class="ed-color" value="${element.style.color || '#888888'}" data-target="color">
-        </div>
-        <div class="ed-field">
-          <label>Fonte</label>
-          <select class="ed-font" data-target="fontFamily">
-            <option value="'Arial', sans-serif">Arial (padrão)</option>
-            <option value="'Georgia', serif">Georgia</option>
-            <option value="'Playfair Display', serif">Playfair Display (elegante)</option>
-            <option value="'Montserrat', sans-serif">Montserrat (moderna)</option>
-            <option value="'Roboto', sans-serif">Roboto (limpa)</option>
-            <option value="'Poppins', sans-serif">Poppins (casual)</option>
-            <option value="'Inter', sans-serif">Inter (tech)</option>
-            <option value="'Ubuntu', sans-serif">Ubuntu (legível)</option>
-            <option value="'Lora', serif">Lora (sérif)</option>
-            <option value="'Barlow Condensed', sans-serif">Barlow Condensed</option>
-            <option value="'Caveat', cursive">Caveat</option>
-          </select>
-        </div>
-      `;
-    }
-
+    // SEÇÃO DE TEXTO
     html += `
-      <div class="ed-actions">
-        <button class="btn-sm danger" onclick="Editor.deleteElement()">🗑 Deletar</button>
-        <button class="btn-sm" onclick="Editor.closePanel()">Fechar</button>
+      <div class="ed-section">
+        <div class="ed-section-label">📝 Conteúdo</div>
+        <div class="ed-field">
+          <label>Editar Texto</label>
+          <textarea class="ed-text" data-target="text">${textContent}</textarea>
+        </div>
       </div>
-    </div>`;
+    `;
+
+    // SEÇÃO DE TAMANHO
+    html += `
+      <div class="ed-section">
+        <div class="ed-section-label">📏 Tamanho</div>
+        <div class="ed-field">
+          <label>Tamanho da Fonte</label>
+          <input type="range" class="ed-size" min="10" max="72" value="${fontSizeNum}" data-target="fontSize">
+          <div class="ed-field-value">${fontSizeNum}px</div>
+        </div>
+      </div>
+    `;
+
+    // SEÇÃO DE COR
+    const colorHex = color.includes('#') ? color : '#ffffff';
+    html += `
+      <div class="ed-section">
+        <div class="ed-section-label">🎨 Cor</div>
+        <div class="ed-field">
+          <label>Cor do Texto</label>
+          <input type="color" class="ed-color" value="${colorHex}" data-target="color">
+          <div class="ed-color-preview">
+            <div class="ed-color-swatch" id="colorSwatch" style="background: ${colorHex}"></div>
+            <span class="ed-color-hex">${colorHex.toUpperCase()}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // SEÇÃO DE FONTE
+    html += `
+      <div class="ed-section">
+        <div class="ed-section-label">🔤 Tipografia</div>
+        <div class="ed-field">
+          <label>Tipo de Fonte</label>
+          <select class="ed-font" data-target="fontFamily">
+            <option value="'Arial', sans-serif" ${fontFamily === "'Arial', sans-serif" ? 'selected' : ''}>Arial (padrão)</option>
+            <option value="'Georgia', serif" ${fontFamily === "'Georgia', serif" ? 'selected' : ''}>Georgia</option>
+            <option value="'Playfair Display', serif" ${fontFamily === "'Playfair Display', serif" ? 'selected' : ''}>Playfair Display (elegante)</option>
+            <option value="'Montserrat', sans-serif" ${fontFamily === "'Montserrat', sans-serif" ? 'selected' : ''}>Montserrat (moderna)</option>
+            <option value="'Roboto', sans-serif" ${fontFamily === "'Roboto', sans-serif" ? 'selected' : ''}>Roboto (limpa)</option>
+            <option value="'Poppins', sans-serif" ${fontFamily === "'Poppins', sans-serif" ? 'selected' : ''}>Poppins (casual)</option>
+            <option value="'Inter', sans-serif" ${fontFamily === "'Inter', sans-serif" ? 'selected' : ''}>Inter (tech)</option>
+            <option value="'Ubuntu', sans-serif" ${fontFamily === "'Ubuntu', sans-serif" ? 'selected' : ''}>Ubuntu (legível)</option>
+            <option value="'Lora', serif" ${fontFamily === "'Lora', serif" ? 'selected' : ''}>Lora (sérif)</option>
+            <option value="'Barlow Condensed', sans-serif" ${fontFamily === "'Barlow Condensed', sans-serif" ? 'selected' : ''}>Barlow Condensed</option>
+            <option value="'Caveat', cursive" ${fontFamily === "'Caveat', cursive" ? 'selected' : ''}>Caveat</option>
+          </select>
+        </div>
+      </div>
+    `;
+
+    // SEÇÃO DE AÇÕES
+    html += `
+      <div class="ed-section">
+        <div class="ed-info">
+          ✨ <strong>Dica:</strong> As mudanças aparecem em tempo real no slide. Clique em outro elemento para editar.
+        </div>
+        <div class="ed-actions">
+          <button class="btn-sm danger" onclick="Editor.deleteElement()" style="flex: 0.5">🗑 Deletar</button>
+          <button class="btn-sm" onclick="Editor.closePanel()" style="flex: 1">Fechar Painel</button>
+        </div>
+      </div>
+    `;
 
     return html;
   },
@@ -188,7 +198,10 @@ const Editor = {
     if (sizeField) {
       sizeField.addEventListener('input', () => {
         element.style.fontSize = sizeField.value + 'px';
-        document.querySelector('.ed-size ~ span').textContent = sizeField.value + 'px';
+        const displayValue = document.querySelector('.ed-field-value');
+        if (displayValue) {
+          displayValue.textContent = sizeField.value + 'px';
+        }
         this.autoSave();
       });
     }
@@ -196,6 +209,13 @@ const Editor = {
     if (colorField) {
       colorField.addEventListener('input', () => {
         element.style.color = colorField.value;
+        
+        // Atualizar preview de cor
+        const swatch = document.getElementById('colorSwatch');
+        const hexDisplay = document.querySelector('.ed-color-hex');
+        if (swatch) swatch.style.background = colorField.value;
+        if (hexDisplay) hexDisplay.textContent = colorField.value.toUpperCase();
+        
         this.autoSave();
       });
     }
