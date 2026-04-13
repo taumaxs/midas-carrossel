@@ -1,570 +1,362 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Gerador de Carrossel · IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-:root{--accent:#FF5500;--bg:#0a0a0a;--card:#111;--border:#1e1e1e;--text:#fff;--muted:#555}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif}
-.wrap{max-width:520px;margin:0 auto;padding:24px 16px 60px}
-
-/* HEADER */
-.hd{margin-bottom:24px}
-.hd-title{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
-.hd-title span{color:var(--accent)}
-.hd-sub{font-size:11px;color:#333;text-transform:uppercase;letter-spacing:2px;margin-top:2px}
-
-/* CARD */
-.card{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
-.clabel{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#333;display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.clabel::after{content:'';flex:1;height:.5px;background:var(--border)}
-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);display:block;margin-bottom:5px}
-input[type=text],select,textarea{width:100%;background:#0d0d0d;border:.5px solid #222;border-radius:8px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;padding:10px 12px;outline:none;transition:border .2s;appearance:none;resize:none}
-input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent)}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
-select option{background:#111}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
-
-/* CHIPS */
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.chip{background:#0d0d0d;border:.5px solid #222;border-radius:999px;padding:5px 11px;font-size:11px;color:#555;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif}
-.chip:hover,.chip.sel{border-color:var(--accent);color:var(--accent)}
-.btn-sug{background:transparent;border:.5px solid #222;border-radius:999px;padding:6px 13px;font-size:11px;color:#444;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
-.btn-sug:hover{border-color:var(--accent);color:var(--accent)}
-.chips-msg{font-size:12px;color:#333;padding:4px 0}
-
-/* TOGGLES */
-.toggles{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
-.tog{padding:7px 13px;background:#0d0d0d;border:.5px solid #222;border-radius:8px;font-size:11px;color:#555;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.8px}
-.tog.on{border-color:var(--accent);color:var(--accent);background:#1a0800}
-
-/* CONTADOR */
-.count-row{display:flex;align-items:center;gap:10px}
-.cbtn{width:34px;height:34px;background:#0d0d0d;border:.5px solid #222;border-radius:8px;color:#888;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.cbtn:hover{border-color:var(--accent);color:var(--accent)}
-.cval{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;min-width:30px;text-align:center}
-.ctotal{font-size:11px;color:#333;line-height:1.7;text-transform:uppercase;letter-spacing:.8px}
-
-/* FUNDO TABS */
-.ftabs{display:flex;gap:6px;margin-bottom:12px}
-.ftab{flex:1;padding:9px 4px;background:#0d0d0d;border:.5px solid #222;border-radius:8px;color:#555;font-size:11px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.8px;line-height:1.5}
-.ftab.on{border-color:var(--accent);color:var(--accent);background:#1a0800}
-.fpanel{display:none}.fpanel.on{display:block}
-
-/* COR */
-.cor-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
-input[type=color]{width:38px;height:34px;border:.5px solid #222;border-radius:8px;background:#0d0d0d;padding:2px;cursor:pointer}
-.preset{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border .15s;flex-shrink:0}
-.preset:hover,.preset.on{border-color:#fff}
-
-/* UPLOAD */
-.upload-box{border:1px dashed #222;border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border .2s;margin-top:8px}
-.upload-box:hover{border-color:var(--accent)}
-.upload-box strong{color:var(--accent);display:block;font-size:13px;margin-bottom:3px}
-.upload-box p{color:#444;font-size:12px}
-input[type=file]{display:none}
-.thumbs{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:.5px solid #333}
-
-/* FORMATO */
-.fmt-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.fmt-btn{padding:10px 8px;background:#0d0d0d;border:.5px solid #222;border-radius:8px;color:#555;font-size:11px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.8px;line-height:1.5}
-.fmt-btn.on{border-color:var(--accent);color:var(--accent);background:#1a0800}
-
-/* BOTÃO GERAR */
-.btn-gen{width:100%;padding:16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-bottom:6px}
-.btn-gen:hover{background:#e04800}
-.btn-gen:disabled{background:#1a1a1a;color:#333;cursor:not-allowed}
-
-/* LOADING */
-.loading{text-align:center;padding:28px;display:none}
-.dots{display:flex;justify-content:center;gap:6px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bup 1.2s infinite}
-.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
-@keyframes bup{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-9px)}}
-.loading p{color:#333;font-size:11px;margin-top:10px;text-transform:uppercase;letter-spacing:1.5px}
-
-/* ERRO */
-.err{background:#180808;border:.5px solid #4a1414;border-radius:8px;padding:12px;color:#ff6b6b;font-size:13px;margin-bottom:12px;display:none;line-height:1.6}
-
-/* OUTPUT */
-.out-head{display:flex;align-items:center;justify-content:space-between;margin:24px 0 12px;flex-wrap:wrap;gap:8px}
-.out-label{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555}
-.out-label b{color:var(--accent)}
-.out-actions{display:flex;gap:6px;flex-wrap:wrap}
-.btn-sm{background:transparent;border:.5px solid #222;border-radius:8px;padding:7px 12px;color:#555;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s;white-space:nowrap}
-.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
-.btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-sm.primary:hover{background:#e04800}
-
-/* SLIDES GRID */
-.sgrid{display:flex;flex-direction:column;gap:14px}
-.swrap{position:relative;border-radius:14px;overflow:hidden}
-.slide-badge{position:absolute;top:10px;right:10px;z-index:20;background:rgba(0,0,0,0.6);border:.5px solid rgba(255,255,255,0.08);border-radius:999px;font-size:10px;color:#666;padding:3px 8px;font-family:'Barlow',sans-serif;pointer-events:none}
-
-/* SLIDE BASE */
-.slide{width:100%;position:relative;display:flex;flex-direction:column;font-family:'Barlow Condensed',sans-serif;overflow:hidden}
-
-/* ASPECT RATIOS */
-.ar-1-1{aspect-ratio:1/1}
-.ar-4-5{aspect-ratio:4/5}
-.ar-9-16{aspect-ratio:9/16}
-.ar-16-9{aspect-ratio:16/9}
-
-/* CAPA */
-.s-capa .ovl{position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.05) 55%)}
-.s-capa .topbar{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.35)}
-.s-capa .tmid{color:#fff}
-.s-capa .body{position:relative;z-index:2;padding:16px;margin-top:auto}
-.s-capa .handle{font-family:'Caveat',cursive;font-size:14px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:4px}
-.s-capa .h1{font-size:clamp(24px,8.5vw,52px);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-1px;margin-bottom:7px;outline:none}
-.s-capa .kw{color:var(--accent);outline:none}
-.s-capa .sub{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.5px;line-height:1.5;border-top:.5px solid rgba(255,255,255,0.1);padding-top:8px;outline:none}
-.arr-svg{position:absolute;top:40%;right:16px;z-index:3;pointer-events:none}
-
-/* CONTEÚDO */
-.s-cont .bnum{position:absolute;top:-8px;left:10px;font-size:110px;font-weight:900;color:rgba(255,85,0,.1);z-index:1;line-height:1;pointer-events:none}
-.s-cont .body{position:relative;z-index:2;padding:20px;display:flex;flex-direction:column;justify-content:center;height:100%}
-.s-cont .stag{font-family:'Caveat',cursive;font-size:15px;color:var(--accent);margin-bottom:4px;outline:none}
-.s-cont .sline{width:32px;height:3px;background:var(--accent);margin-bottom:12px}
-.s-cont .stitle{font-size:clamp(20px,6.5vw,38px);font-weight:900;text-transform:uppercase;line-height:.93;letter-spacing:-.5px;margin-bottom:10px;outline:none}
-.s-cont .sdesc{font-family:'Barlow',sans-serif;font-size:13px;line-height:1.65;outline:none}
-
-/* CTA */
-.s-cta .body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-.s-cta .cpre{font-family:'Caveat',cursive;font-size:17px;color:#555;margin-bottom:8px;outline:none}
-.s-cta .cmain{font-size:clamp(22px,7.5vw,46px);font-weight:900;text-transform:uppercase;line-height:.9;margin-bottom:12px;outline:none}
-.s-cta .cred{color:var(--accent);outline:none}
-.s-cta .cpill{border:.5px solid #2a2a2a;border-radius:999px;padding:7px 14px;font-size:11px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:'Barlow',sans-serif;outline:none}
-.s-cta .cbora{font-family:'Caveat',cursive;font-size:18px;color:#444;outline:none}
-
-/* EDITOR PANEL */
-.editor-panel{background:#111;border:.5px solid #1e1e1e;border-radius:0 0 12px 12px;padding:14px;display:none}
-.editor-panel.open{display:block}
-.ed-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#333;margin-bottom:10px}
-.ed-fields{display:flex;flex-direction:column;gap:8px}
-.ed-field label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
-.ed-field textarea{font-size:13px;padding:8px 10px;height:auto}
-.ed-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
-.btn-edit{position:absolute;bottom:10px;left:10px;z-index:20;background:rgba(0,0,0,0.7);border:.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;font-size:10px;color:#888;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
-.btn-edit:hover{color:var(--accent);border-color:var(--accent)}
-.btn-dl{position:absolute;bottom:10px;right:48px;z-index:20;background:rgba(0,0,0,0.7);border:.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;font-size:10px;color:#888;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
-.btn-dl:hover{color:var(--accent);border-color:var(--accent)}
-
-/* FOOTER */
-.footer{text-align:center;margin-top:40px;font-size:11px;color:#222;text-transform:uppercase;letter-spacing:1.5px}
-.footer span{color:var(--accent)}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Gerador de Carrossel · IA</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/editor.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
 </head>
 <body>
-<div class="wrap">
-
-<div class="hd">
-  <div class="hd-title">Gerador de <span>Carrossel</span></div>
-  <div class="hd-sub">IA integrada · Qualquer nicho</div>
-</div>
-
-<div class="err" id="errBox"></div>
-
-<!-- ① TEMA -->
-<div class="card">
-  <div class="clabel">Tema</div>
-  <div class="field">
-    <label>Digite o tema do carrossel</label>
-    <input type="text" id="tema" placeholder="Ex: Como vender mais no Instagram sem aparecer"/>
-  </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-    <label style="margin:0">Sugestões da IA</label>
-    <button class="btn-sug" onclick="sugerirTemas()">✦ Gerar ideias</button>
-  </div>
-  <div id="chipsArea"><div class="chips-msg">Clique em "Gerar ideias" para ver sugestões</div></div>
-</div>
-
-<!-- ② NICHO + CONFIG -->
-<div class="card">
-  <div class="clabel">Configurações</div>
-  <div class="row2" style="margin-bottom:12px">
-    <div class="field">
-      <label>Nicho / Área</label>
-      <input type="text" id="nicho" placeholder="Ex: Finanças, Moda, Fitness..."/>
+  <div class="wrap">
+    <!-- HEADER -->
+    <div class="hd">
+      <div class="hd-title">Gerador de <span>Carrossel</span></div>
+      <div class="hd-sub">IA integrada · Qualquer nicho</div>
     </div>
-    <div class="field">
-      <label>Público-alvo</label>
-      <input type="text" id="publico" placeholder="Ex: Empreendedores"/>
+    
+    <!-- ERRO -->
+    <div class="err" id="errBox"></div>
+    
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('criar')">🎨 Criar</button>
+      <button class="tab" onclick="switchTab('favoritos')">⭐ Favoritos</button>
+      <button class="tab" onclick="switchTab('projetos')">📁 Projetos</button>
+      <button class="tab" onclick="switchTab('historico')">📜 Histórico</button>
     </div>
-  </div>
-  <div class="row2" style="margin-bottom:12px">
-    <div class="field">
-      <label>Tom</label>
-      <select id="tom">
-        <option value="direto e provocativo">Direto e Provocativo</option>
-        <option value="educativo e prático">Educativo e Prático</option>
-        <option value="motivacional">Motivacional</option>
-        <option value="polêmico">Polêmico</option>
-        <option value="humorístico">Humorístico</option>
-        <option value="reflexivo">Reflexivo</option>
-        <option value="urgente">Urgente</option>
-        <option value="inspiracional">Inspiracional</option>
-        <option value="empático">Empático</option>
-        <option value="técnico e informativo">Técnico</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Handle / Marca</label>
-      <input type="text" id="handle" placeholder="@suamarca"/>
-    </div>
-  </div>
-  <div class="field">
-    <label>Slides de conteúdo</label>
-    <div class="count-row">
-      <button class="cbtn" onclick="chg(-1)">−</button>
-      <div class="cval" id="cv">4</div>
-      <button class="cbtn" onclick="chg(1)">+</button>
-      <div class="ctotal" style="font-size:11px;color:#333">conteúdo<br>total: <span id="tot">6</span></div>
-    </div>
-  </div>
-  <div class="field">
-    <label style="margin-bottom:8px">Incluir slides opcionais</label>
-    <div class="toggles">
-      <div class="tog on" id="tog-capa" onclick="togSlide('capa')">🎯 Capa</div>
-      <div class="tog on" id="tog-cta" onclick="togSlide('cta')">📣 CTA</div>
-      <div class="tog" id="tog-like" onclick="togSlide('like')">❤️ Slide de like</div>
-    </div>
-  </div>
-</div>
-
-<!-- ③ FORMATO -->
-<div class="card">
-  <div class="clabel">Formato</div>
-  <div class="fmt-grid">
-    <div class="fmt-btn on" id="fmt-1-1" onclick="setFmt('1-1')">⬛ 1:1<br><span style="font-size:9px;color:#444">Quadrado Instagram</span></div>
-    <div class="fmt-btn" id="fmt-4-5" onclick="setFmt('4-5')">📱 4:5<br><span style="font-size:9px;color:#444">Retrato Instagram</span></div>
-    <div class="fmt-btn" id="fmt-9-16" onclick="setFmt('9-16')">📲 9:16<br><span style="font-size:9px;color:#444">Stories / Reels</span></div>
-    <div class="fmt-btn" id="fmt-16-9" onclick="setFmt('16-9')">🖥️ 16:9<br><span style="font-size:9px;color:#444">YouTube / LinkedIn</span></div>
-  </div>
-</div>
-
-<!-- ④ FUNDO -->
-<div class="card">
-  <div class="clabel">Fundo</div>
-  <div class="ftabs">
-    <div class="ftab on" id="tab-cor" onclick="setF('cor')">🎨 Cor</div>
-    <div class="ftab" id="tab-up" onclick="setF('up')">📁 Imagens</div>
-    <div class="ftab" id="tab-ia" onclick="setF('ia')">✦ IA (breve)</div>
-  </div>
-  <div class="fpanel on" id="p-cor">
-    <label>Cor de fundo</label>
-    <div class="cor-row">
-      <input type="color" id="cor" value="#0d0d0d" onchange="fundoCor=this.value"/>
-      <div class="preset" style="background:#0d0d0d" onclick="setCor('#0d0d0d')"></div>
-      <div class="preset" style="background:#1a0800" onclick="setCor('#1a0800')"></div>
-      <div class="preset" style="background:#080818" onclick="setCor('#080818')"></div>
-      <div class="preset" style="background:#081808" onclick="setCor('#081808')"></div>
-      <div class="preset" style="background:#180818" onclick="setCor('#180818')"></div>
-      <div class="preset" style="background:#FF5500" onclick="setCor('#FF5500')"></div>
-      <div class="preset" style="background:#1a1a1a" onclick="setCor('#1a1a1a')"></div>
-      <div class="preset" style="background:#fff;border-color:#333" onclick="setCor('#ffffff')"></div>
-    </div>
-  </div>
-  <div class="fpanel" id="p-up">
-    <label>Imagens na ordem dos slides</label>
-    <div class="upload-box" onclick="document.getElementById('fi').click()">
-      <strong>Clique para selecionar imagens</strong>
-      <p>JPG ou PNG · na ordem que aparecerão</p>
-    </div>
-    <input type="file" id="fi" accept="image/*" multiple onchange="onUpload(event)"/>
-    <div class="thumbs" id="thumbs"></div>
-  </div>
-  <div class="fpanel" id="p-ia">
-    <div style="padding:14px;text-align:center;color:#333;font-size:13px;line-height:1.8">🚧 Em breve<br>Use cor ou imagens por enquanto</div>
-  </div>
-</div>
-
-<button class="btn-gen" id="btnG" onclick="gerar()">⚡ Gerar Carrossel</button>
-
-<div class="loading" id="load">
-  <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-  <p>Gerando seu carrossel...</p>
-</div>
-
-<div id="outArea" style="display:none">
-  <div class="out-head">
-    <div class="out-label">Carrossel · <b id="outN"></b> slides</div>
-    <div class="out-actions">
-      <button class="btn-sm" onclick="gerar()">↺ Regenerar</button>
-      <button class="btn-sm" onclick="dlZip()">⬇ ZIP</button>
-      <button class="btn-sm primary" onclick="dlTodos()">⬇ Todos PNG</button>
-    </div>
-  </div>
-  <div class="sgrid" id="sgrid"></div>
-</div>
-
-<div class="footer">Gerador de Carrossel · <span>IA integrada</span></div>
-</div>
-
-<script>
-// ── STATE ──
-let numSlides=4, fundo='cor', fundoCor='#0d0d0d', imgs=[], formato='1-1';
-let incCapa=true, incCta=true, incLike=false;
-let slidesData=[];
-
-// ── UTILS ──
-function chg(d){numSlides=Math.max(1,Math.min(9,numSlides+d));document.getElementById('cv').textContent=numSlides;document.getElementById('tot').textContent=numSlides+(incCapa?1:0)+(incCta?1:0)+(incLike?1:0)}
-function setFmt(f){formato=f;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('on'));document.getElementById('fmt-'+f).classList.add('on')}
-function setF(t){fundo=t;['cor','up','ia'].forEach(x=>{document.getElementById('tab-'+x).classList.toggle('on',x===t);document.getElementById('p-'+x).classList.toggle('on',x===t)})}
-function setCor(v){fundoCor=v;document.getElementById('cor').value=v}
-function onUpload(e){imgs=[];document.getElementById('thumbs').innerHTML='';Array.from(e.target.files).forEach((f,i)=>{const u=URL.createObjectURL(f);imgs.push(u);const el=document.createElement('img');el.src=u;el.className='thumb';document.getElementById('thumbs').appendChild(el)})}
-function togSlide(t){if(t==='capa'){incCapa=!incCapa;document.getElementById('tog-capa').classList.toggle('on',incCapa)}else if(t==='cta'){incCta=!incCta;document.getElementById('tog-cta').classList.toggle('on',incCta)}else{incLike=!incLike;document.getElementById('tog-like').classList.toggle('on',incLike)}chg(0)}
-function showErr(m){const b=document.getElementById('errBox');b.innerHTML=m;b.style.display='block';setTimeout(()=>b.style.display='none',9000)}
-function arClass(){return'ar-'+formato}
-
-// ── API ──
-async function callAPI(body){
-  const r=await fetch('/api/gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json();
-  if(!r.ok)throw new Error(d.error||'HTTP '+r.status);
-  return d;
-}
-
-// ── SUGESTÕES ──
-async function sugerirTemas(){
-  const nicho=document.getElementById('nicho').value.trim()||'criação de conteúdo';
-  const a=document.getElementById('chipsArea');
-  a.innerHTML='<div class="chips-msg">✦ Gerando ideias...</div>';
-  try{
-    const d=await callAPI({model:'claude-haiku-4-5-20251001',max_tokens:600,messages:[{role:'user',content:`Gere 8 temas para carrosseis virais no Instagram para o nicho de "${nicho}". Misture polêmicos, educativos e motivacionais. Responda SOMENTE JSON válido sem markdown: {"temas":["tema1","tema2",...]}`}]});
-    const t=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
-    const j=JSON.parse(t);
-    a.innerHTML='<div class="chips">'+j.temas.map(tm=>`<div class="chip" onclick="usarTema(this)">${tm}</div>`).join('')+'</div>';
-  }catch(e){a.innerHTML=`<div class="chips-msg" style="color:#ff6b6b">Erro: ${e.message}</div>`}
-}
-function usarTema(el){document.getElementById('tema').value=el.textContent;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
-
-// ── GERAR ──
-async function gerar(){
-  const tema=document.getElementById('tema').value.trim();
-  const nicho=document.getElementById('nicho').value.trim()||'geral';
-  const pub=document.getElementById('publico').value.trim()||'pessoas interessadas no tema';
-  const tom=document.getElementById('tom').value;
-  const handle=document.getElementById('handle').value.trim()||'@suamarca';
-  if(!tema){showErr('⚠️ Digite o tema primeiro!');return}
-  document.getElementById('btnG').disabled=true;
-  document.getElementById('load').style.display='block';
-  document.getElementById('outArea').style.display='none';
-
-  const extras=[];
-  if(incCapa)extras.push('capa');
-  if(incLike)extras.push('slide_like');
-  if(incCta)extras.push('cta');
-
-  const prompt=`Você é um copywriter especialista em carrosseis virais para Instagram, adaptado para qualquer nicho.
-
-Crie conteúdo para um carrossel com:
-- Tema: "${tema}"
-- Nicho: ${nicho}
-- Público: ${pub}
-- Tom: ${tom}
-- Handle: ${handle}
-- Slides de conteúdo: ${numSlides}
-- Incluir: ${extras.join(', ')||'só conteúdo'}
-
-RESPONDA APENAS JSON VÁLIDO, sem markdown, sem texto fora do JSON:
-{
-  ${incCapa?`"capa":{"p1":"TÍTULO PRINCIPAL CAPS (max 4 palavras)","kw":"DESTAQUE EM LARANJA (max 3 palavras)","sub":"SUBTÍTULO CAPS (max 12 palavras)"},`:''}
-  "slides":[
-    {"n":1,"tag":"texto curto handwritten","titulo":"PONTO IMPACTANTE CAPS (max 5 palavras)","desc":"explicação clara e direta (max 20 palavras)"}
-  ]${incLike?`,
-  "like":{"pre":"texto intro handwritten","main":"TEXTO PRINCIPAL CAPS","destaque":"PALAVRA DESTAQUE LARANJA","pill":"texto pílula pequena"}`:''}${incCta?`,
-  "cta":{"pre":"intro handwritten curta","l1":"LINHA 1 CAPS","l2":"LINHA LARANJA CAPS","pill":"texto pílula curto","fim":"encerramento handwritten"}`:''}
-}`;
-
-  try{
-    const d=await callAPI({model:'claude-haiku-4-5-20251001',max_tokens:2500,messages:[{role:'user',content:prompt}]});
-    const txt=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
-    let j;try{j=JSON.parse(txt)}catch{throw new Error('Formato inválido. Tente novamente.')}
-    slidesData=j;
-    renderSlides(j,handle);
-  }catch(e){showErr('⚠️ '+e.message)}
-  finally{document.getElementById('btnG').disabled=false;document.getElementById('load').style.display='none'}
-}
-
-// ── HELPERS ──
-function getBg(i){
-  if(fundo==='up'&&imgs[i])return`<img src="${imgs[i]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0" crossorigin="anonymous"/>`;
-  const c=fundoCor;
-  if(i===0&&incCapa)return`<div style="position:absolute;inset:0;background:linear-gradient(150deg,${c} 0%,${shift(c,40)} 50%,${c} 100%);z-index:0"></div>`;
-  return`<div style="position:absolute;inset:0;background:${c};z-index:0"></div>`;
-}
-function shift(h,a){try{const n=parseInt(h.replace('#',''),16);const r=Math.min(255,((n>>16)&255)+a);const g=Math.min(255,((n>>8)&255)+Math.floor(a/2));const b=Math.min(255,(n&255)+Math.floor(a/3));return'#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('')}catch{return h}}
-function isLight(h){try{const n=parseInt(h.replace('#',''),16);return(.299*((n>>16)&255)+.587*((n>>8)&255)+.114*(n&255))>150}catch{return false}}
-function tc(){return isLight(fundoCor)?'#111':'#fff'}
-function mc(){return isLight(fundoCor)?'#444':'#888'}
-
-// ── RENDER ──
-function renderSlides(d, handle){
-  const g=document.getElementById('sgrid');
-  g.innerHTML='';
-  const ar=arClass();
-  let idx=0;
-  const total=(incCapa?1:0)+numSlides+(incLike?1:0)+(incCta?1:0);
-  document.getElementById('outN').textContent=total;
-
-  // CAPA
-  if(incCapa&&d.capa){
-    const c=d.capa; const bg=getBg(0); idx++;
-    const hasImg=fundo==='up'&&imgs[0];
-    g.innerHTML+=slideWrap(idx,total,`
-      <div class="slide s-capa ${ar}">
-        ${bg}
-        <div class="ovl"></div>
-        <div class="topbar"><span>${handle}</span><span class="tmid">✦</span><span style="font-size:10px">2026</span></div>
-        <svg class="arr-svg" width="38" height="50" viewBox="0 0 38 50" fill="none">
-          <path d="M5 5 Q28 14 30 38" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".5"/>
-          <path d="M22 31 L30 38 L24 45" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
-        </svg>
-        <div class="body">
-          <div class="handle" contenteditable="true" spellcheck="false">${handle}</div>
-          <div class="h1" contenteditable="true" spellcheck="false">${c.p1}<br><span class="kw" contenteditable="true" spellcheck="false">${c.kw}</span></div>
-          <div class="sub" contenteditable="true" spellcheck="false">${c.sub}</div>
+    
+    <!-- TAB: CRIAR -->
+    <div id="tab-criar" class="tab-content">
+      <!-- ① TEMA -->
+      <div class="card">
+        <div class="clabel">Tema</div>
+        <div class="field">
+          <label>Digite o tema do carrossel</label>
+          <input type="text" id="tema" placeholder="Ex: Como vender mais no Instagram sem aparecer"/>
         </div>
-      </div>`,idx);
-  }
-
-  // CONTEÚDO
-  d.slides.forEach((s,i)=>{
-    const bg=getBg(idx); const hasImg=fundo==='up'&&imgs[idx];
-    const stc=hasImg?'#fff':tc(); const smc=hasImg?'rgba(255,255,255,.65)':mc();
-    idx++;
-    g.innerHTML+=slideWrap(idx,total,`
-      <div class="slide s-cont ${ar}" style="background:${fundo==='cor'?fundoCor:'#0d0d0d'}">
-        ${bg}
-        ${hasImg?'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.1) 60%);z-index:1"></div>':''}
-        <div class="bnum">${String(s.n).padStart(2,'0')}</div>
-        <div class="body">
-          <div class="stag" contenteditable="true" spellcheck="false">${s.tag}</div>
-          <div class="sline"></div>
-          <div class="stitle" style="color:${stc}" contenteditable="true" spellcheck="false">${s.titulo}</div>
-          <div class="sdesc" style="color:${smc}" contenteditable="true" spellcheck="false">${s.desc}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <label style="margin:0">Sugestões da IA</label>
+          <button class="btn-sug" onclick="sugerirTemas()">✦ Gerar ideias</button>
         </div>
-      </div>`,idx);
-  });
-
-  // LIKE
-  if(incLike&&d.like){
-    const lk=d.like; const bg=getBg(idx); const hasImg=fundo==='up'&&imgs[idx];
-    idx++;
-    g.innerHTML+=slideWrap(idx,total,`
-      <div class="slide s-cta ${ar}" style="background:${fundo==='cor'?fundoCor:'#0d0d0d'}">
-        ${bg}
-        ${hasImg?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:1"></div>':''}
-        <div class="body">
-          <div class="cpre" contenteditable="true" spellcheck="false">${lk.pre}</div>
-          <div class="cmain" style="color:${hasImg?'#fff':tc()}" contenteditable="true" spellcheck="false">${lk.main}<br><span class="cred" contenteditable="true" spellcheck="false">${lk.destaque}</span></div>
-          <div class="cpill" contenteditable="true" spellcheck="false">${lk.pill}</div>
-          <div class="cbora">❤️</div>
+        <div id="chipsArea"><div class="chips-msg">Clique em "Gerar ideias" para ver sugestões</div></div>
+      </div>
+      
+      <!-- ② CONFIGURAÇÕES -->
+      <div class="card">
+        <div class="clabel">Configurações</div>
+        <div class="row2" style="margin-bottom:12px">
+          <div class="field">
+            <label>Nicho / Área</label>
+            <input type="text" id="nicho" placeholder="Ex: Finanças, Moda, Fitness..."/>
+          </div>
+          <div class="field">
+            <label>Público-alvo</label>
+            <input type="text" id="publico" placeholder="Ex: Empreendedores"/>
+          </div>
         </div>
-      </div>`,idx);
-  }
-
-  // CTA
-  if(incCta&&d.cta){
-    const ct=d.cta; const bg=getBg(idx); const hasImg=fundo==='up'&&imgs[idx];
-    idx++;
-    g.innerHTML+=slideWrap(idx,total,`
-      <div class="slide s-cta ${ar}" style="background:${fundo==='cor'?fundoCor:'#0d0d0d'}">
-        ${bg}
-        ${hasImg?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:1"></div>':''}
-        <div class="body">
-          <div class="cpre" contenteditable="true" spellcheck="false">${ct.pre}</div>
-          <div class="cmain" style="color:${hasImg?'#fff':tc()}" contenteditable="true" spellcheck="false">${ct.l1}<br><span class="cred" contenteditable="true" spellcheck="false">${ct.l2}</span></div>
-          <div class="cpill" contenteditable="true" spellcheck="false">${ct.pill}</div>
-          <div class="cbora" contenteditable="true" spellcheck="false">${ct.fim} →</div>
+        <div class="row2" style="margin-bottom:12px">
+          <div class="field">
+            <label>Tom</label>
+            <select id="tom">
+              <option value="direto e provocativo">Direto e Provocativo</option>
+              <option value="educativo e prático">Educativo e Prático</option>
+              <option value="motivacional">Motivacional</option>
+              <option value="polêmico">Polêmico</option>
+              <option value="humorístico">Humorístico</option>
+              <option value="reflexivo">Reflexivo</option>
+              <option value="urgente">Urgente</option>
+              <option value="inspiracional">Inspiracional</option>
+              <option value="empático">Empático</option>
+              <option value="técnico e informativo">Técnico</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Handle / Marca</label>
+            <input type="text" id="handle" placeholder="@suamarca"/>
+          </div>
         </div>
-      </div>`,idx);
-  }
-
-  document.getElementById('outArea').style.display='block';
-  document.getElementById('outArea').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function slideWrap(idx,total,inner,n){
-  return`<div class="swrap" id="slide-wrap-${n}">
-    <div class="slide-badge">${idx} / ${total}</div>
-    ${inner}
-    <button class="btn-dl" onclick="dlSlide(${n})" title="Baixar este slide">⬇</button>
-  </div>`;
-}
-
-// ── DOWNLOAD ÚNICO ──
-async function dlSlide(n){
-  const el=document.getElementById('slide-wrap-'+n);
-  if(!el)return;
-  const badge=el.querySelector('.slide-badge');
-  const btns=el.querySelectorAll('.btn-dl,.btn-edit');
-  badge.style.display='none';
-  btns.forEach(b=>b.style.display='none');
-  try{
-    const canvas=await html2canvas(el.querySelector('.slide'),{scale:2,useCORS:true,allowTaint:true,backgroundColor:null});
-    const a=document.createElement('a');
-    a.download=`slide-${n}.png`;
-    a.href=canvas.toDataURL('image/png');
-    a.click();
-  }finally{
-    badge.style.display='';
-    btns.forEach(b=>b.style.display='');
-  }
-}
-
-// ── DOWNLOAD TODOS PNG ──
-async function dlTodos(){
-  const wraps=document.querySelectorAll('.swrap');
-  for(let i=0;i<wraps.length;i++){
-    const w=wraps[i];
-    const badge=w.querySelector('.slide-badge');
-    const btns=w.querySelectorAll('.btn-dl,.btn-edit');
-    badge.style.display='none';
-    btns.forEach(b=>b.style.display='none');
-    const canvas=await html2canvas(w.querySelector('.slide'),{scale:2,useCORS:true,allowTaint:true,backgroundColor:null});
-    const a=document.createElement('a');
-    a.download=`slide-${i+1}.png`;
-    a.href=canvas.toDataURL('image/png');
-    a.click();
-    badge.style.display='';
-    btns.forEach(b=>b.style.display='');
-    await new Promise(r=>setTimeout(r,400));
-  }
-}
-
-// ── DOWNLOAD ZIP ──
-async function dlZip(){
-  const wraps=document.querySelectorAll('.swrap');
-  const zip=new JSZip();
-  const pasta=zip.folder('carrossel');
-  for(let i=0;i<wraps.length;i++){
-    const w=wraps[i];
-    const badge=w.querySelector('.slide-badge');
-    const btns=w.querySelectorAll('.btn-dl,.btn-edit');
-    badge.style.display='none';
-    btns.forEach(b=>b.style.display='none');
-    const canvas=await html2canvas(w.querySelector('.slide'),{scale:2,useCORS:true,allowTaint:true,backgroundColor:null});
-    const dataUrl=canvas.toDataURL('image/png');
-    const base64=dataUrl.split(',')[1];
-    pasta.file(`slide-${i+1}.png`,base64,{base64:true});
-    badge.style.display='';
-    btns.forEach(b=>b.style.display='');
-  }
-  const blob=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a');
-  a.download='carrossel.zip';
-  a.href=URL.createObjectURL(blob);
-  a.click();
-}
-</script>
+        <div class="field">
+          <label>Slides de conteúdo</label>
+          <div class="count-row">
+            <button class="cbtn" onclick="chg(-1)">−</button>
+            <div class="cval" id="cv">4</div>
+            <button class="cbtn" onclick="chg(1)">+</button>
+            <div class="ctotal" style="font-size:11px;color:#333">conteúdo<br>total: <span id="tot">6</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label style="margin-bottom:8px">Incluir slides opcionais</label>
+          <div class="toggles">
+            <div class="tog on" id="tog-capa" onclick="togSlide('capa')">🎯 Capa</div>
+            <div class="tog on" id="tog-cta" onclick="togSlide('cta')">📣 CTA</div>
+            <div class="tog" id="tog-like" onclick="togSlide('like')">❤️ Slide de like</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ③ FORMATO -->
+      <div class="card">
+        <div class="clabel">Formato</div>
+        <div class="fmt-grid">
+          <div class="fmt-btn on" id="fmt-1-1" onclick="setFmt('1-1')">⬛ 1:1<br><span style="font-size:9px;color:#444">Quadrado</span></div>
+          <div class="fmt-btn" id="fmt-4-5" onclick="setFmt('4-5')">📱 4:5<br><span style="font-size:9px;color:#444">Retrato</span></div>
+          <div class="fmt-btn" id="fmt-9-16" onclick="setFmt('9-16')">📲 9:16<br><span style="font-size:9px;color:#444">Stories</span></div>
+          <div class="fmt-btn" id="fmt-16-9" onclick="setFmt('16-9')">🖥️ 16:9<br><span style="font-size:9px;color:#444">YouTube</span></div>
+        </div>
+      </div>
+      
+      <!-- ④ FUNDO -->
+      <div class="card">
+        <div class="clabel">Fundo</div>
+        <div class="ftabs">
+          <div class="ftab on" id="tab-cor" onclick="setF('cor')">🎨 Cor</div>
+          <div class="ftab" id="tab-up" onclick="setF('up')">📁 Imagens</div>
+          <div class="ftab" id="tab-ia" onclick="setF('ia')">✦ IA (breve)</div>
+        </div>
+        <div class="fpanel on" id="p-cor">
+          <label>Cor de fundo</label>
+          <div class="cor-row">
+            <input type="color" id="cor" value="#0d0d0d" onchange="setCor(this.value)"/>
+            <div class="preset" style="background:#0d0d0d" onclick="setCor('#0d0d0d')"></div>
+            <div class="preset" style="background:#1a0800" onclick="setCor('#1a0800')"></div>
+            <div class="preset" style="background:#080818" onclick="setCor('#080818')"></div>
+            <div class="preset" style="background:#081808" onclick="setCor('#081808')"></div>
+            <div class="preset" style="background:#180818" onclick="setCor('#180818')"></div>
+            <div class="preset" style="background:#FF5500" onclick="setCor('#FF5500')"></div>
+            <div class="preset" style="background:#1a1a1a" onclick="setCor('#1a1a1a')"></div>
+            <div class="preset" style="background:#fff;border-color:#333" onclick="setCor('#ffffff')"></div>
+          </div>
+        </div>
+        <div class="fpanel" id="p-up">
+          <label>Imagens na ordem dos slides</label>
+          <div class="upload-box" onclick="document.getElementById('fi').click()">
+            <strong>Clique para selecionar imagens</strong>
+            <p>JPG ou PNG · na ordem que aparecerão</p>
+          </div>
+          <input type="file" id="fi" accept="image/*" multiple onchange="onUpload(event)"/>
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+        <div class="fpanel" id="p-ia">
+          <div style="padding:14px;text-align:center;color:#333;font-size:13px;line-height:1.8">🚧 Em breve<br>Use cor ou imagens por enquanto</div>
+        </div>
+      </div>
+      
+      <button class="btn-gen" id="btnG" onclick="gerar()">⚡ Gerar Carrossel</button>
+      
+      <div class="loading" id="load">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <p>Gerando seu carrossel...</p>
+      </div>
+      
+      <div id="outArea" style="display:none">
+        <div class="out-head">
+          <div class="out-label">Carrossel · <b id="outN"></b> slides</div>
+          <div class="out-actions">
+            <button class="btn-sm" onclick="gerar()">↺ Regenerar</button>
+            <button class="btn-sm" onclick="saveFavorito()">⭐ Favorito</button>
+            <button class="btn-sm" onclick="saveProject()">📁 Projeto</button>
+            <button class="btn-sm" onclick="dlZip()">⬇ ZIP</button>
+            <button class="btn-sm primary" onclick="dlTodos()">⬇ Todos PNG</button>
+          </div>
+        </div>
+        <div class="sgrid" id="sgrid"></div>
+      </div>
+    </div>
+    
+    <!-- TAB: FAVORITOS -->
+    <div id="tab-favoritos" class="tab-content" style="display:none">
+      <div class="card">
+        <div class="clabel">Favoritos Salvos</div>
+        <div id="favoritosList" style="display:flex;flex-direction:column;gap:8px;">
+          <p style="color:#333;text-align:center;padding:20px;">Nenhum favorito ainda</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: PROJETOS -->
+    <div id="tab-projetos" class="tab-content" style="display:none">
+      <div class="card">
+        <div class="clabel">Meus Projetos</div>
+        <div id="projetosList" style="display:flex;flex-direction:column;gap:8px;">
+          <p style="color:#333;text-align:center;padding:20px;">Nenhum projeto ainda</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: HISTÓRICO -->
+    <div id="tab-historico" class="tab-content" style="display:none">
+      <div class="card">
+        <div class="clabel">Histórico de Gerações</div>
+        <div id="historicoList" style="display:flex;flex-direction:column;gap:8px;">
+          <p style="color:#333;text-align:center;padding:20px;">Histórico vazio</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- EDITOR PANEL -->
+    <div class="editor-panel" id="editorPanel"></div>
+    
+    <div class="footer">Gerador de Carrossel · <span>IA integrada</span></div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/ai-integration.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/main.js"></script>
+  
+  <script>
+    /**
+     * Funções de abas
+     */
+    function switchTab(tabName) {
+      // Esconder todas as abas
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      
+      // Mostrar aba selecionada
+      document.getElementById('tab-' + tabName).style.display = 'block';
+      event.target.classList.add('active');
+      
+      // Atualizar conteúdo
+      if (tabName === 'favoritos') {
+        loadFavoritosList();
+      } else if (tabName === 'projetos') {
+        loadProjetosList();
+      } else if (tabName === 'historico') {
+        loadHistoricoList();
+      }
+    }
+    
+    /**
+     * Carregar lista de favoritos
+     */
+    function loadFavoritosList() {
+      const list = document.getElementById('favoritosList');
+      const favoritos = Storage.getFavoritos();
+      
+      if (favoritos.length === 0) {
+        list.innerHTML = '<p style="color:#333;text-align:center;padding:20px;">Nenhum favorito ainda</p>';
+        return;
+      }
+      
+      list.innerHTML = favoritos.map(fav => `
+        <div style="background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:bold;">${fav.nome}</div>
+            <div style="font-size:11px;color:#666;margin-top:4px;">${fav.thumbnail}</div>
+            <div style="font-size:10px;color:#444;margin-top:2px;">${formatDate(fav.criado)}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-sm" onclick="loadFavorito('${fav.id}'; switchTab('criar'))">✓ Carregar</button>
+            <button class="btn-sm danger" onclick="deletarFavorito('${fav.id}')">🗑</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function deletarFavorito(id) {
+      if (confirm('Tem certeza?')) {
+        Storage.deleteFavorito(id);
+        loadFavoritosList();
+      }
+    }
+    
+    /**
+     * Carregar lista de projetos
+     */
+    function loadProjetosList() {
+      const list = document.getElementById('projetosList');
+      const projetos = Storage.getProjetos();
+      
+      if (projetos.length === 0) {
+        list.innerHTML = '<p style="color:#333;text-align:center;padding:20px;">Nenhum projeto ainda</p>';
+        return;
+      }
+      
+      list.innerHTML = projetos.map(proj => `
+        <div style="background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:bold;">${proj.nome}</div>
+            <div style="font-size:10px;color:#666;margin-top:4px;">Criado: ${formatDate(proj.criado)}</div>
+            <div style="font-size:10px;color:#666;margin-top:2px;">Modificado: ${formatDate(proj.modificado)}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-direction:column;">
+            <button class="btn-sm" onclick="loadProject('${proj.id}'); switchTab('criar')">✓ Abrir</button>
+            <button class="btn-sm" onclick="duplicarProject('${proj.id}')">📋 Duplicar</button>
+            <button class="btn-sm danger" onclick="deletarProject('${proj.id}')">🗑 Deletar</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function deletarProject(id) {
+      if (confirm('Tem certeza?')) {
+        Storage.deleteProject(id);
+        loadProjetosList();
+      }
+    }
+    
+    function duplicarProject(id) {
+      const nome = prompt('Nome da cópia:');
+      if (nome) {
+        const newId = Storage.duplicateProject(id, nome);
+        if (newId) {
+          loadProjetosList();
+          showSuccess('✓ Projeto duplicado!');
+        }
+      }
+    }
+    
+    /**
+     * Carregar histórico
+     */
+    function loadHistoricoList() {
+      const list = document.getElementById('historicoList');
+      const historico = Storage.getHistorico();
+      
+      if (historico.length === 0) {
+        list.innerHTML = '<p style="color:#333;text-align:center;padding:20px;">Histórico vazio</p>';
+        return;
+      }
+      
+      list.innerHTML = historico.map(item => `
+        <div style="background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:bold;">${item.tema}</div>
+            <div style="font-size:11px;color:#666;margin-top:4px;">Tipo: ${item.tipo}</div>
+            <div style="font-size:10px;color:#444;margin-top:2px;">${formatDate(item.criado)}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-sm" onclick="usarHistorico('${item.id}')">✓ Usar</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function usarHistorico(id) {
+      const item = Storage.getHistoricoItem(id);
+      if (item) {
+        estado.slidesData = item.slides;
+        Object.assign(estado, item.config);
+        renderSlides(item.slides, item.config.handle || '@suamarca');
+        switchTab('criar');
+        initUI();
+      }
+    }
+  </script>
 </body>
 </html>

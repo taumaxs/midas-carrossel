@@ -1,0 +1,129 @@
+/* RESPONSIVIDADE */
+
+@media (max-width: 1400px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .editor-section,
+  .preview-section {
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+
+  .hd-title {
+    font-size: 24px;
+  }
+
+  .tabs {
+    font-size: 11px;
+    overflow-x: auto;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+
+  .fmt-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .out-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .out-actions {
+    width: 100%;
+  }
+
+  .out-actions .btn-sm {
+    flex: 1;
+  }
+
+  .slide {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px;
+  }
+
+  .hd-title {
+    font-size: 20px;
+  }
+
+  .hd-sub {
+    font-size: 10px;
+  }
+
+  .card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  label {
+    font-size: 10px;
+  }
+
+  input[type=text],
+  select,
+  textarea {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .btn-gen {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .btn-sm {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .thumbs {
+    gap: 5px;
+  }
+
+  .thumb {
+    width: 44px;
+    height: 44px;
+  }
+
+  .fmt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slide {
+    min-height: 250px;
+  }
+
+  .s-capa .h1 {
+    font-size: clamp(18px, 6vw, 32px);
+  }
+
+  .s-cont .stitle {
+    font-size: clamp(16px, 5vw, 24px);
+  }
+
+  .s-cta .cmain {
+    font-size: clamp(18px, 5vw, 32px);
+  }
+}

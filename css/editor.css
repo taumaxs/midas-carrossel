@@ -1,0 +1,193 @@
+/* EDITOR VISUAL COMPLETO */
+
+.editor-panel {
+  background: #111;
+  border: 0.5px solid #1e1e1e;
+  border-radius: 0 0 12px 12px;
+  padding: 14px;
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.editor-panel.open {
+  display: block;
+}
+
+.ed-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.ed-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ed-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ed-field label {
+  font-size: 10px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ed-field input,
+.ed-field select,
+.ed-field textarea {
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.ed-field textarea {
+  height: 60px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.ed-field input[type="color"] {
+  height: 40px;
+  width: 100%;
+}
+
+.ed-field input[type="range"] {
+  height: 6px;
+  cursor: pointer;
+}
+
+.ed-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+
+.ed-actions .btn-sm {
+  flex: 1;
+}
+
+.btn-edit {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.7);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #888;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+
+.btn-edit:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-dl {
+  position: absolute;
+  bottom: 10px;
+  right: 48px;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.7);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #888;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+
+.btn-dl:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* SELEÇÃO DE ELEMENTO */
+.slide.selected {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.slide > div[contenteditable] {
+  cursor: text;
+  position: relative;
+}
+
+.slide > div[contenteditable]:hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 85, 0, 0.05);
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.slide > div[contenteditable]:focus {
+  background: rgba(255, 85, 0, 0.1);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+/* DRAG & DROP */
+.draggable-element {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dragging {
+  opacity: 0.7;
+  cursor: grabbing;
+}
+
+.drop-target {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+/* IMAGE EDITOR */
+.img-editor-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.img-resize-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 2px;
+  cursor: nwse-resize;
+  z-index: 25;
+}
+
+.img-editor-wrapper.resizing {
+  outline: 1px solid var(--accent);
+}
