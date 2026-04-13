@@ -658,6 +658,32 @@ input[type=file] {
   background: rgba(255, 107, 107, 0.1);
 }
 
+/* BOTÕES DE TEMPLATE */
+.btn-template {
+  background: transparent;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 12px;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.btn-template:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255, 85, 0, 0.05);
+}
+
+.btn-template:active {
+  background: rgba(255, 85, 0, 0.1);
+}
+
 /* SLIDES GRID */
 .sgrid {
   display: flex;
@@ -796,6 +822,21 @@ input[type=file] {
   right: 16px;
   z-index: 3;
   pointer-events: none;
+}
+
+/* HANDLE/MARCA */
+.s-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.s-handle .body {
+  position: relative;
+  z-index: 2;
+  text-align: center;
 }
 
 /* CONTEÚDO */

@@ -404,7 +404,14 @@ function getBg(i) {
  * DOWNLOAD
  */
 async function dlSlide(n) {
-  const el = document.getElementById('slide-wrap-' + n)?.querySelector('.slide');
+  let el;
+  
+  if (n === 'handle') {
+    el = document.getElementById('slide-handle')?.querySelector('.slide');
+  } else {
+    el = document.getElementById('slide-wrap-' + n)?.querySelector('.slide');
+  }
+  
   if (!el) return;
   await Export.exportPNG(el, `slide-${n}.png`);
 }
@@ -473,5 +480,219 @@ function loadProject(id) {
     renderSlides(proj.slides, proj.config.handle || '@suamarca');
     initUI();
     showSuccess('✓ Projeto carregado!');
+  }
+}
+
+
+/**
+ * FASE 1 - ADICIONAR ELEMENTOS PRONTOS (SEM GERAR COM IA)
+ */
+
+// Inicializar estado de slides vazios
+function inicializarSlides() {
+  if (!estado.slidesData) {
+    estado.slidesData = {
+      slides: []
+    };
+  }
+}
+
+// Adicionar Capa Pronta
+function adicionarCapaPronta() {
+  inicializarSlides();
+  
+  estado.slidesData.capa = {
+    p1: 'TÍTULO PRINCIPAL',
+    kw: 'DESTAQUE',
+    sub: 'SUBTÍTULO'
+  };
+  
+  // Atualizar toggle e total
+  estado.incCapa = true;
+  updateToggles();
+  updateTotal();
+  
+  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ Capa adicionada!');
+  saveState();
+}
+
+// Adicionar Slide de Texto
+function adicionarTexto() {
+  inicializarSlides();
+  
+  const novoSlide = {
+    n: estado.slidesData.slides.length + 1,
+    tag: 'novo texto',
+    titulo: 'TEXTO PRINCIPAL',
+    desc: 'Descrição do slide'
+  };
+  
+  estado.slidesData.slides.push(novoSlide);
+  updateTotal();
+  
+  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ Slide de texto adicionado!');
+  saveState();
+}
+
+// Adicionar Slide com Imagem
+function adicionarImagem() {
+  inicializarSlides();
+  
+  const novoSlide = {
+    n: estado.slidesData.slides.length + 1,
+    tag: 'imagem',
+    titulo: 'COM IMAGEM',
+    desc: 'Upload sua imagem de fundo'
+  };
+  
+  estado.slidesData.slides.push(novoSlide);
+  updateTotal();
+  
+  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ Slide com imagem adicionado!');
+  saveState();
+}
+
+// Adicionar Handle/Marca
+function adicionarHandle() {
+  inicializarSlides();
+  
+  estado.slidesData.handle = {
+    handle: document.getElementById('handle').value.trim() || '@suamarca',
+    logo: '',
+    cor: '#FF5500'
+  };
+  
+  // Renderizar como slide especial
+  const handle = estado.slidesData.handle.handle;
+  const ar = arClass();
+  
+  const g = document.getElementById('sgrid');
+  if (!g.innerHTML.includes('slide-handle')) {
+    const slideHTML = `<div class="swrap" id="slide-handle">
+      <div class="slide-badge">Handle</div>
+      <div class="slide s-handle ${ar}" style="background:${estado.fundoCor}">
+        <div style="position:absolute;inset:0;background:linear-gradient(150deg,${estado.fundoCor} 0%,${shift(estado.fundoCor, 40)} 50%,${estado.fundoCor} 100%);z-index:0"></div>
+        <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+          <div style="text-align:center;">
+            <div class="handle" contenteditable="true" spellcheck="false" style="font-size:32px;color:#fff;font-weight:bold;">${handle}</div>
+          </div>
+          <div style="width:100px;height:100px;background:#333;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px;cursor:pointer;text-align:center;" contenteditable="true" spellcheck="false">Logo/Marca</div>
+          <input type="color" style="cursor:pointer;width:80px;height:40px;border:none;border-radius:8px;" value="#FF5500" onchange="atualizarCorHandle(this.value)"/>
+        </div>
+      </div>
+      <button class="btn-dl" onclick="dlSlide('handle')" title="Baixar slide em PNG">⬇ PNG</button>
+    </div>`;
+    
+    g.innerHTML = slideHTML + g.innerHTML;
+  }
+  
+  document.getElementById('outArea').style.display = 'block';
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ Slide de Handle/Marca adicionado!');
+  saveState();
+}
+
+function atualizarCorHandle(cor) {
+  const slide = document.getElementById('slide-handle')?.querySelector('.slide');
+  if (slide) {
+    slide.style.background = cor;
+  }
+}
+
+// Adicionar CTA
+function adicionarCTA() {
+  inicializarSlides();
+  
+  estado.slidesData.cta = {
+    pre: 'confira este',
+    l1: 'CALL TO ACTION',
+    l2: 'PRINCIPAL',
+    pill: 'saiba mais',
+    fim: 'acesse agora'
+  };
+  
+  estado.incCta = true;
+  updateToggles();
+  updateTotal();
+  
+  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ CTA adicionado!');
+  saveState();
+}
+
+// Adicionar Like
+function adicionarLike() {
+  inicializarSlides();
+  
+  estado.slidesData.like = {
+    pre: 'você vai gostar',
+    main: 'TEXTO PRINCIPAL',
+    destaque: 'DESTAQUE',
+    pill: 'saiba mais'
+  };
+  
+  estado.incLike = true;
+  updateToggles();
+  updateTotal();
+  
+  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showSuccess('✓ Slide de Like adicionado!');
+  saveState();
+}
+
+// Limpar todos os slides
+function limparSlides() {
+  if (confirm('Tem certeza que quer limpar todos os slides?')) {
+    estado.slidesData = {
+      slides: []
+    };
+    estado.incCapa = false;
+    estado.incCta = false;
+    estado.incLike = false;
+    updateToggles();
+    updateTotal();
+    
+    const g = document.getElementById('sgrid');
+    if (g) g.innerHTML = '';
+    
+    const outArea = document.getElementById('outArea');
+    if (outArea) outArea.style.display = 'none';
+    
+    showSuccess('✓ Slides limpos!');
+    saveState();
+  }
+}
+
+/**
+ * FORMATO COM DROPDOWN E CUSTOM
+ */
+function setFmtDropdown(fmt) {
+  if (fmt === 'custom') {
+    document.getElementById('customFormatField').style.display = 'block';
+  } else {
+    document.getElementById('customFormatField').style.display = 'none';
+    setFmt(fmt);
+  }
+  document.getElementById('formatoSelect').value = fmt;
+}
+
+function setCustomFormat(ratio) {
+  if (ratio.trim()) {
+    estado.formato = ratio;
+    saveState();
+    
+    // Atualizar todos os slides se existirem
+    if (estado.slidesData) {
+      renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+    }
+    showSuccess(`✓ Formato alterado para ${ratio}!`);
   }
 }
