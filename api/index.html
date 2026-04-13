@@ -3,37 +3,213 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gerador de Carrossel</title>
+<title>Gerador de Carrossel · By Taumaxs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;background:#0a0a0a;color:#fff;font-family:'Barlow',sans-serif}
+.wrapper{max-width:480px;margin:0 auto;padding:28px 18px 60px}
+.hd-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.hd-title span{color:#FF5500}
+.hd-sub{font-size:11px;color:#444;margin-top:2px;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:28px}
+.card{background:#111;border:0.5px solid #1e1e1e;border-radius:12px;padding:18px;margin-bottom:14px}
+.clabel{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#444;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.clabel::after{content:'';flex:1;height:0.5px;background:#1e1e1e}
+label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#444;display:block;margin-bottom:6px}
+input[type=text],select{width:100%;background:#0d0d0d;border:0.5px solid #222;border-radius:8px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;padding:11px 13px;outline:none;transition:border .2s;appearance:none}
+input[type=text]:focus,select:focus{border-color:#FF5500}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5' stroke='%23444' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select option{background:#111}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{background:#0d0d0d;border:0.5px solid #222;border-radius:999px;padding:6px 12px;font-size:12px;color:#666;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif}
+.chip:hover,.chip.sel{border-color:#FF5500;color:#FF5500}
+.btn-sugerir{background:transparent;border:0.5px solid #222;border-radius:999px;padding:7px 14px;font-size:11px;color:#444;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
+.btn-sugerir:hover{border-color:#FF5500;color:#FF5500}
+.chips-msg{font-size:12px;color:#444;padding:6px 2px}
+.count-row{display:flex;align-items:center;gap:10px}
+.cbtn{width:36px;height:36px;background:#0d0d0d;border:0.5px solid #222;border-radius:8px;color:#888;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cbtn:hover{border-color:#FF5500;color:#FF5500}
+.cval{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;min-width:32px;text-align:center}
+.ctotal{font-size:11px;color:#444;text-transform:uppercase;letter-spacing:.8px;line-height:1.7}
+.ftabs{display:flex;gap:6px;margin-bottom:14px}
+.ftab{flex:1;padding:10px 4px;background:#0d0d0d;border:0.5px solid #222;border-radius:8px;color:#555;font-size:11px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.8px;line-height:1.5}
+.ftab.on{border-color:#FF5500;color:#FF5500;background:#1a0800}
+.fpanel{display:none}.fpanel.on{display:block}
+.cor-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+input[type=color]{width:40px;height:36px;border:0.5px solid #222;border-radius:8px;background:#0d0d0d;padding:2px;cursor:pointer}
+.preset{width:26px;height:26px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border .15s;flex-shrink:0}
+.preset:hover,.preset.on{border-color:#fff}
+.upload-box{border:1px dashed #222;border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:border .2s;margin-top:8px}
+.upload-box:hover{border-color:#FF5500}
+.upload-box strong{color:#FF5500;display:block;font-size:13px;margin-bottom:4px}
+.upload-box p{color:#444;font-size:12px}
+input[type=file]{display:none}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.thumb-item{position:relative}
+.thumb{width:56px;height:56px;border-radius:6px;object-fit:cover;border:0.5px solid #333;display:block}
+.thumb-n{font-size:10px;color:#444;text-align:center;margin-top:3px}
+.btn-gen{width:100%;padding:17px;background:#FF5500;border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-bottom:6px}
+.btn-gen:hover{background:#e04800}
+.btn-gen:disabled{background:#1e1e1e;color:#333;cursor:not-allowed}
+.loading{text-align:center;padding:32px;display:none}
+.dots{display:flex;justify-content:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:#FF5500;animation:bup 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bup{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-9px)}}
+.loading p{color:#444;font-size:11px;margin-top:12px;text-transform:uppercase;letter-spacing:1.5px}
+.err{background:#180808;border:0.5px solid #4a1414;border-radius:8px;padding:13px;color:#ff6b6b;font-size:13px;margin-bottom:12px;display:none;line-height:1.6}
+.out-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px}
+.out-label{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555}
+.out-label b{color:#FF5500}
+.btn-regen{background:transparent;border:0.5px solid #222;border-radius:8px;padding:7px 13px;color:#555;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
+.btn-regen:hover{border-color:#FF5500;color:#FF5500}
+.sgrid{display:flex;flex-direction:column;gap:16px}
+.swrap{position:relative}
+.slide{width:100%;aspect-ratio:1/1;border-radius:14px;overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:'Barlow Condensed',sans-serif}
+.badge{position:absolute;top:11px;right:11px;z-index:10;background:rgba(0,0,0,0.5);border:0.5px solid rgba(255,255,255,0.08);border-radius:999px;font-size:10px;color:#666;padding:3px 9px;font-family:'Barlow',sans-serif}
+.s-capa .ovl{position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.05) 55%)}
+.s-capa .topbar{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;padding:15px 18px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4)}
+.s-capa .tmid{color:#fff}
+.s-capa .body{position:relative;z-index:2;padding:18px;margin-top:auto}
+.s-capa .handle{font-family:'Caveat',cursive;font-size:15px;color:rgba(255,255,255,0.55);text-align:center;margin-bottom:5px}
+.s-capa .h1{font-size:clamp(28px,9.5vw,54px);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-1px;margin-bottom:8px}
+.s-capa .kw{color:#FF5500}
+.s-capa .sub{font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;line-height:1.5;border-top:.5px solid rgba(255,255,255,0.1);padding-top:9px}
+.arr{position:absolute;top:40%;right:18px;z-index:3}
+.s-cont .bnum{position:absolute;top:-6px;left:10px;font-size:120px;font-weight:900;color:rgba(255,85,0,.1);z-index:1;line-height:1}
+.s-cont .body{position:relative;z-index:2;padding:22px;display:flex;flex-direction:column;justify-content:center;height:100%}
+.s-cont .stag{font-family:'Caveat',cursive;font-size:16px;color:#FF5500;margin-bottom:5px}
+.s-cont .sline{width:34px;height:3px;background:#FF5500;margin-bottom:13px}
+.s-cont .stitle{font-size:clamp(22px,7vw,40px);font-weight:900;text-transform:uppercase;line-height:.93;letter-spacing:-.5px;margin-bottom:11px}
+.s-cont .sdesc{font-family:'Barlow',sans-serif;font-size:13px;line-height:1.65}
+.s-cta .body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px}
+.s-cta .cpre{font-family:'Caveat',cursive;font-size:18px;color:#666;margin-bottom:9px}
+.s-cta .cmain{font-size:clamp(24px,8vw,48px);font-weight:900;text-transform:uppercase;line-height:.9;margin-bottom:13px}
+.s-cta .cred{color:#FF5500}
+.s-cta .cpill{border:.5px solid #2a2a2a;border-radius:999px;padding:7px 16px;font-size:11px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:13px;font-family:'Barlow',sans-serif}
+.s-cta .cbora{font-family:'Caveat',cursive;font-size:19px;color:#555}
+.footer{text-align:center;margin-top:48px;font-size:11px;color:#333;text-transform:uppercase;letter-spacing:1.5px}
+.footer span{color:#FF5500}
+</style>
 </head>
 <body>
-
-<h1>Gerador de Carrossel 🔥</h1>
-
-<input id="tema" placeholder="Digite o tema" />
-<button onclick="gerar()">Gerar</button>
-
-<pre id="res"></pre>
-
+<div class="wrapper">
+  <div class="hd-title">Gerador de <span>Carrossel</span></div>
+  <div class="hd-sub">By Taumaxs · IA integrada</div>
+  <div class="err" id="errBox"></div>
+  <div class="card">
+    <div class="clabel">Tema do carrossel</div>
+    <div class="field">
+      <label>Digite o tema ou escolha uma sugestão</label>
+      <input type="text" id="tema" placeholder="Ex: Por que seu alcance caiu no Instagram" />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <label style="margin:0">Sugestões geradas pela IA</label>
+      <button class="btn-sugerir" onclick="sugerirTemas()">✦ Gerar sugestões</button>
+    </div>
+    <div id="chipsArea"><div class="chips-msg">Clique em "Gerar sugestões" para ver ideias</div></div>
+  </div>
+  <div class="card">
+    <div class="clabel">Configurações</div>
+    <div class="row2">
+      <div class="field">
+        <label>Público-alvo</label>
+        <input type="text" id="publico" placeholder="Ex: Criadores de conteúdo" />
+      </div>
+      <div class="field">
+        <label>Tom</label>
+        <select id="tom">
+          <option value="direto e provocativo">Direto e Provocativo</option>
+          <option value="educativo e prático">Educativo e Prático</option>
+          <option value="motivacional e energético">Motivacional</option>
+          <option value="polêmico e controverso">Polêmico</option>
+          <option value="humorístico e irônico">Humorístico</option>
+          <option value="reflexivo e profundo">Reflexivo</option>
+          <option value="urgente e alarmante">Urgente</option>
+          <option value="inspiracional">Inspiracional</option>
+          <option value="empático e acolhedor">Empático</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Slides de conteúdo (além da capa e CTA)</label>
+      <div class="count-row">
+        <button class="cbtn" onclick="chg(-1)">−</button>
+        <div class="cval" id="cv">4</div>
+        <button class="cbtn" onclick="chg(1)">+</button>
+        <div class="ctotal">slides de conteúdo<br><span style="color:#333">total: <span id="tot">6</span> slides</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel">Tipo de fundo</div>
+    <div class="ftabs">
+      <div class="ftab on" id="tab-cor" onclick="setF('cor')">🎨<br>Cor sólida</div>
+      <div class="ftab" id="tab-up" onclick="setF('up')">📁<br>Minhas imagens</div>
+      <div class="ftab" id="tab-ia" onclick="setF('ia')">✦<br>IA (breve)</div>
+    </div>
+    <div class="fpanel on" id="p-cor">
+      <label>Escolha a cor dos slides</label>
+      <div class="cor-row">
+        <input type="color" id="cor" value="#0d0d0d" onchange="fundoCor=this.value" />
+        <div class="preset" style="background:#0d0d0d" onclick="setCor('#0d0d0d')"></div>
+        <div class="preset" style="background:#1a0800" onclick="setCor('#1a0800')"></div>
+        <div class="preset" style="background:#080818" onclick="setCor('#080818')"></div>
+        <div class="preset" style="background:#081808" onclick="setCor('#081808')"></div>
+        <div class="preset" style="background:#180818" onclick="setCor('#180818')"></div>
+        <div class="preset" style="background:#FF5500" onclick="setCor('#FF5500')"></div>
+        <div class="preset" style="background:#ffffff;border-color:#333" onclick="setCor('#ffffff')"></div>
+      </div>
+    </div>
+    <div class="fpanel" id="p-up">
+      <label>Imagens na ordem dos slides (1ª = capa)</label>
+      <div class="upload-box" onclick="document.getElementById('fi').click()">
+        <strong>Clique para selecionar imagens</strong>
+        <p>JPG ou PNG · na ordem que aparecerão</p>
+      </div>
+      <input type="file" id="fi" accept="image/*" multiple onchange="onUpload(event)" />
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+    <div class="fpanel" id="p-ia">
+      <div style="padding:16px;text-align:center;color:#444;font-size:13px;line-height:1.7">
+        <div style="font-size:24px;margin-bottom:8px">🚧</div>
+        Geração de imagem com IA chegando em breve.<br>
+        Por enquanto use cor sólida ou suba suas imagens.
+      </div>
+    </div>
+  </div>
+  <button class="btn-gen" id="btnG" onclick="gerar()">⚡ Gerar Carrossel</button>
+  <div class="loading" id="load">
+    <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <p>A IA está gerando seu carrossel...</p>
+  </div>
+  <div id="out" style="display:none">
+    <div class="out-head">
+      <div class="out-label">Carrossel · <b id="outN"></b> slides</div>
+      <button class="btn-regen" onclick="gerar()">↺ Regenerar</button>
+    </div>
+    <div class="sgrid" id="sgrid"></div>
+  </div>
+  <div class="footer">Feito com ✦ por <span>Taumaxs</span> · Defy Gravity</div>
+</div>
 <script>
-async function gerar() {
-  const tema = document.getElementById('tema').value;
-
-  const prompt = `Crie um carrossel sobre: ${tema}`;
-
-  const r = await fetch('/api/gerar', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ prompt })
-  });
-
-  const data = await r.json();
-
-  document.getElementById('res').innerText =
-    JSON.stringify(data, null, 2);
-}
+let numSlides=4,fundo='cor',fundoCor='#0d0d0d',imgs=[];
+function chg(d){numSlides=Math.max(1,Math.min(9,numSlides+d));document.getElementById('cv').textContent=numSlides;document.getElementById('tot').textContent=numSlides+2}
+function setF(t){fundo=t;['cor','up','ia'].forEach(x=>{document.getElementById('tab-'+x).classList.toggle('on',x===t);document.getElementById('p-'+x).classList.toggle('on',x===t)})}
+function setCor(v){fundoCor=v;document.getElementById('cor').value=v}
+function onUpload(e){imgs=[];document.getElementById('thumbs').innerHTML='';Array.from(e.target.files).forEach((f,i)=>{const u=URL.createObjectURL(f);imgs.push(u);const w=document.createElement('div');w.className='thumb-item';w.innerHTML='<img src="'+u+'" class="thumb"/><div class="thumb-n">Slide '+(i+1)+'</div>';document.getElementById('thumbs').appendChild(w)})}
+function showErr(m){const b=document.getElementById('errBox');b.innerHTML=m;b.style.display='block';setTimeout(()=>b.style.display='none',9000)}
+async function callAPI(body){const r=await fetch('/api/gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw new Error(data.error||'HTTP '+r.status);return data}
+async function sugerirTemas(){const a=document.getElementById('chipsArea');a.innerHTML='<div class="chips-msg">✦ Gerando sugestões...</div>';try{const d=await callAPI({model:'claude-haiku-4-5-20251001',max_tokens:600,messages:[{role:'user',content:'Gere 8 temas para carrosseis virais no Instagram para criadores de conteúdo brasileiros. Misture polêmicos, provocativos, educativos e motivacionais. Responda SOMENTE JSON válido sem markdown: {"temas":["tema1","tema2",...]}'}]});const t=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();const j=JSON.parse(t);a.innerHTML='<div class="chips">'+j.temas.map(tm=>'<div class="chip" onclick="usarTema(this)">'+tm+'</div>').join('')+'</div>'}catch(e){a.innerHTML='<div class="chips-msg" style="color:#ff6b6b">Erro: '+e.message+'</div>'}}
+function usarTema(el){document.getElementById('tema').value=el.textContent;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function getBg(i){if(fundo==='up'&&imgs[i])return'<img src="'+imgs[i]+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"/>';const c=fundoCor;if(i===0)return'<div style="position:absolute;inset:0;background:linear-gradient(150deg,'+c+' 0%,'+shift(c,35)+' 50%,'+c+' 100%);z-index:0"></div>';return'<div style="position:absolute;inset:0;background:'+c+';z-index:0"></div>'}
+function shift(h,a){try{const n=parseInt(h.replace('#',''),16);const r=Math.min(255,((n>>16)&255)+a);const g=Math.min(255,((n>>8)&255)+Math.floor(a/2));const b=Math.min(255,(n&255)+Math.floor(a/3));return'#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('')}catch{return h}}
+function isLight(h){try{const n=parseInt(h.replace('#',''),16);return(.299*((n>>16)&255)+.587*((n>>8)&255)+.114*(n&255))>150}catch{return false}}
+async function gerar(){const tema=document.getElementById('tema').value.trim();const pub=document.getElementById('publico').value.trim()||'criadores de conteúdo';const tom=document.getElementById('tom').value;if(!tema){showErr('⚠️ Digite ou escolha um tema primeiro!');return}document.getElementById('btnG').disabled=true;document.getElementById('load').style.display='block';document.getElementById('out').style.display='none';const prompt='Você é um copywriter especialista em carrosseis virais para Instagram, estilo brasileiro direto e impactante.\n\nCrie conteúdo para '+numSlides+' slides de conteúdo (além da capa e CTA).\nTema: "'+tema+'"\nPúblico: '+pub+'\nTom: '+tom+'\n\nRESPONDA APENAS JSON VÁLIDO, sem markdown, sem texto fora do JSON:\n{"capa":{"p1":"PARTE PRINCIPAL CAPS (max 4 palavras)","kw":"PALAVRA DESTAQUE LARANJA (max 3 palavras)","sub":"SUBTÍTULO CAPS (max 12 palavras)","tag":"#hashtag"},"slides":[{"n":1,"tag":"texto handwritten curto","titulo":"PONTO IMPACTANTE CAPS","desc":"explicação direta max 20 palavras"}],"cta":{"pre":"intro handwritten curta","l1":"LINHA 1 CAPS","l2":"LINHA LARANJA CAPS","pill":"texto pílula curto","fim":"encerramento handwritten"}}';try{const d=await callAPI({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:prompt}]});const txt=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();let j;try{j=JSON.parse(txt)}catch{throw new Error('Formato inesperado. Tente novamente.')}renderSlides(j)}catch(e){showErr('⚠️ '+e.message)}finally{document.getElementById('btnG').disabled=false;document.getElementById('load').style.display='none'}}
+function renderSlides(d){const g=document.getElementById('sgrid');g.innerHTML='';const total=numSlides+2;document.getElementById('outN').textContent=total;const tc=isLight(fundoCor)?'#111':'#fff';const mc=isLight(fundoCor)?'#444':'#888';const c=d.capa;g.innerHTML+='<div class="swrap"><div class="badge">1 / '+total+'</div><div class="slide s-capa">'+getBg(0)+'<div class="ovl"></div><div class="topbar"><span>Defy Gravity</span><span class="tmid">By Taumaxs</span><span>2026 ®</span></div><svg class="arr" width="42" height="54" viewBox="0 0 42 54" fill="none"><path d="M6 6 Q30 16 32 40" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity=".55"/><path d="M24 33 L32 40 L26 47" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".55"/></svg><div class="body"><div class="handle">@taumaxs</div><div class="h1">'+c.p1+'<br><span class="kw">'+c.kw+'</span></div><div class="sub">'+c.sub+'</div></div></div></div>';d.slides.forEach((s,i)=>{const bg=getBg(i+1);const hasImg=fundo==='up'&&imgs[i+1];const stc=hasImg?'#fff':tc;const smc=hasImg?'rgba(255,255,255,.65)':mc;g.innerHTML+='<div class="swrap"><div class="badge">'+(i+2)+' / '+total+'</div><div class="slide s-cont" style="background:'+(fundo==='cor'?fundoCor:'#0d0d0d')+'">'+bg+(hasImg?'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.15) 60%);z-index:1"></div>':'')+'<div class="bnum">'+String(s.n).padStart(2,'0')+'</div><div class="body"><div class="stag">'+s.tag+'</div><div class="sline"></div><div class="stitle" style="color:'+stc+'">'+s.titulo+'</div><div class="sdesc" style="color:'+smc+'">'+s.desc+'</div></div></div></div>'});const ct=d.cta;const bgCta=getBg(numSlides+1);const hasCtaImg=fundo==='up'&&imgs[numSlides+1];g.innerHTML+='<div class="swrap"><div class="badge">'+total+' / '+total+'</div><div class="slide s-cta" style="background:'+(fundo==='cor'?fundoCor:'#0d0d0d')+'">'+bgCta+(hasCtaImg?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.65);z-index:1"></div>':'')+'<div class="body"><div class="cpre">'+ct.pre+'</div><div class="cmain" style="color:'+(hasCtaImg?'#fff':tc)+'">'+ct.l1+'<br><span class="cred">'+ct.l2+'</span></div><div class="cpill">'+ct.pill+'</div><div class="cbora">'+ct.fim+' →</div></div></div></div>';document.getElementById('out').style.display='block';document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'})}
 </script>
-
 </body>
 </html>
