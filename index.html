@@ -6,7 +6,7 @@
   <title>Gerador de Carrossel · IA</title>
   
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Barlow:wght@400;500;600&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&family=Roboto:wght@400;500;600&family=Inter:wght@400;500;600&family=Ubuntu:wght@400;500;700&family=Lora:wght@400;600&display=swap" rel="stylesheet"/>
   
   <!-- External Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -30,14 +30,15 @@
     
     <!-- TABS -->
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('criar')">🎨 Criar</button>
+      <button class="tab active" onclick="switchTab('gerar')">⚡ Gerar com IA</button>
+      <button class="tab" onclick="switchTab('manual')">✏️ Criar Manual</button>
       <button class="tab" onclick="switchTab('favoritos')">⭐ Favoritos</button>
       <button class="tab" onclick="switchTab('projetos')">📁 Projetos</button>
       <button class="tab" onclick="switchTab('historico')">📜 Histórico</button>
     </div>
     
-    <!-- TAB: CRIAR -->
-    <div id="tab-criar" class="tab-content">
+    <!-- TAB: GERAR COM IA -->
+    <div id="tab-gerar" class="tab-content">
       <!-- ① TEMA -->
       <div class="card">
         <div class="clabel">Tema</div>
@@ -105,32 +106,24 @@
         </div>
       </div>
       
-       <!-- ③ FORMATO -->
-       <div class="card">
-         <div class="clabel">Formato</div>
-         <div class="row2" style="margin-bottom:12px">
-           <div class="field">
-             <label>Selecione o formato</label>
-             <select id="formatoSelect" onchange="setFmtDropdown(this.value)">
-               <option value="1-1">⬛ 1:1 (Quadrado)</option>
-               <option value="4-5">📱 4:5 (Retrato)</option>
-               <option value="9-16">📲 9:16 (Stories)</option>
-               <option value="16-9">🖥️ 16:9 (YouTube)</option>
-               <option value="custom">🔧 Custom</option>
-             </select>
-           </div>
-           <div class="field" id="customFormatField" style="display:none">
-             <label>Proporção Custom (ex: 2:3)</label>
-             <input type="text" id="customRatio" placeholder="2:3" onchange="setCustomFormat(this.value)"/>
-           </div>
-         </div>
-         <div class="fmt-grid">
-           <div class="fmt-btn on" id="fmt-1-1" onclick="setFmt('1-1')">⬛ 1:1<br><span style="font-size:9px;color:#444">Quadrado</span></div>
-           <div class="fmt-btn" id="fmt-4-5" onclick="setFmt('4-5')">📱 4:5<br><span style="font-size:9px;color:#444">Retrato</span></div>
-           <div class="fmt-btn" id="fmt-9-16" onclick="setFmt('9-16')">📲 9:16<br><span style="font-size:9px;color:#444">Stories</span></div>
-           <div class="fmt-btn" id="fmt-16-9" onclick="setFmt('16-9')">🖥️ 16:9<br><span style="font-size:9px;color:#444">YouTube</span></div>
-         </div>
-       </div>
+      <!-- ③ FORMATO -->
+      <div class="card">
+        <div class="clabel">Formato</div>
+        <div class="field">
+          <label>Selecione o formato</label>
+          <select id="formatoSelect" onchange="setFmtDropdown(this.value)">
+            <option value="1-1">⬛ 1:1 (Quadrado)</option>
+            <option value="4-5">📱 4:5 (Instagram Feed)</option>
+            <option value="9-16">📲 9:16 (Stories/Reels)</option>
+            <option value="16-9">🖥️ 16:9 (Landscape)</option>
+            <option value="custom">🔧 Custom</option>
+          </select>
+        </div>
+        <div class="field" id="customFormatField" style="display:none">
+          <label>Proporção Custom (ex: 2:3)</label>
+          <input type="text" id="customRatio" placeholder="2:3" onchange="setCustomFormat(this.value)"/>
+        </div>
+      </div>
       
       <!-- ④ FUNDO -->
       <div class="card">
@@ -152,21 +145,7 @@
             <div class="preset" style="background:#FF5500" onclick="setCor('#FF5500')"></div>
             <div class="preset" style="background:#1a1a1a" onclick="setCor('#1a1a1a')"></div>
             <div class="preset" style="background:#fff;border-color:#333" onclick="setCor('#ffffff')"></div>
-       <!-- ADICIONAR ELEMENTOS PRONTOS -->
-       <div class="card">
-         <div class="clabel">Adicionar Elementos Prontos</div>
-         <p style="font-size:12px;color:#999;margin-bottom:12px">Clique nos botões abaixo para adicionar slides prontos. Você poderá editar cada um após criação.</p>
-         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-           <button class="btn-template" onclick="adicionarCapaPronta()">🎯 Adicionar Capa</button>
-           <button class="btn-template" onclick="adicionarTexto()">📝 Adicionar Texto</button>
-           <button class="btn-template" onclick="adicionarImagem()">🖼️ Adicionar Imagem</button>
-           <button class="btn-template" onclick="adicionarHandle()">📱 Adicionar Handle</button>
-           <button class="btn-template" onclick="adicionarCTA()">📣 Adicionar CTA</button>
-           <button class="btn-template" onclick="adicionarLike()">❤️ Adicionar Like</button>
-         </div>
-         <button class="btn-sm danger" onclick="limparSlides()" style="width:100%;margin-bottom:12px">🗑 Limpar Tudo</button>
-       </div>
-       
+          </div>
         </div>
         <div class="fpanel" id="p-up">
           <label>Imagens na ordem dos slides</label>
@@ -201,6 +180,36 @@
           </div>
         </div>
         <div class="sgrid" id="sgrid"></div>
+      </div>
+    </div>
+    
+    <!-- TAB: CRIAR MANUAL -->
+    <div id="tab-manual" class="tab-content" style="display:none">
+      <div class="card">
+        <div class="clabel">Adicionar Elementos Prontos</div>
+        <p style="font-size:12px;color:#999;margin-bottom:16px">Clique nos botões abaixo para adicionar slides prontos. Você poderá editar cada um após criação.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <button class="btn-template" onclick="adicionarCapaPronta()">🎯 Adicionar Capa</button>
+          <button class="btn-template" onclick="adicionarTexto()">📝 Adicionar Texto</button>
+          <button class="btn-template" onclick="adicionarImagem()">🖼️ Adicionar Imagem</button>
+          <button class="btn-template" onclick="adicionarHandle()">📱 Adicionar Handle</button>
+          <button class="btn-template" onclick="adicionarCTA()">📣 Adicionar CTA</button>
+          <button class="btn-template" onclick="adicionarLike()">❤️ Adicionar Like</button>
+        </div>
+        <button class="btn-sm danger" onclick="limparSlides()" style="width:100%;">🗑 Limpar Tudo</button>
+      </div>
+      
+      <div id="manualOutArea" style="display:none">
+        <div class="out-head">
+          <div class="out-label">Carrossel · <b id="manualOutN"></b> slides</div>
+          <div class="out-actions">
+            <button class="btn-sm" onclick="saveFavorito()">⭐ Favorito</button>
+            <button class="btn-sm" onclick="saveProject()">📁 Projeto</button>
+            <button class="btn-sm" onclick="dlZip()">⬇ ZIP</button>
+            <button class="btn-sm primary" onclick="dlTodos()">⬇ Todos PNG</button>
+          </div>
+        </div>
+        <div class="sgrid" id="manualSgrid"></div>
       </div>
     </div>
     
@@ -291,7 +300,7 @@
             <div style="font-size:10px;color:#444;margin-top:2px;">${formatDate(fav.criado)}</div>
           </div>
           <div style="display:flex;gap:6px;">
-            <button class="btn-sm" onclick="loadFavorito('${fav.id}'; switchTab('criar'))">✓ Carregar</button>
+            <button class="btn-sm" onclick="loadFavorito('${fav.id}'); switchTab('gerar')">✓ Carregar</button>
             <button class="btn-sm danger" onclick="deletarFavorito('${fav.id}')">🗑</button>
           </div>
         </div>
@@ -325,7 +334,7 @@
             <div style="font-size:10px;color:#666;margin-top:2px;">Modificado: ${formatDate(proj.modificado)}</div>
           </div>
           <div style="display:flex;gap:6px;flex-direction:column;">
-            <button class="btn-sm" onclick="loadProject('${proj.id}'); switchTab('criar')">✓ Abrir</button>
+            <button class="btn-sm" onclick="loadProject('${proj.id}'); switchTab('gerar')">✓ Abrir</button>
             <button class="btn-sm" onclick="duplicarProject('${proj.id}')">📋 Duplicar</button>
             <button class="btn-sm danger" onclick="deletarProject('${proj.id}')">🗑 Deletar</button>
           </div>
@@ -383,7 +392,7 @@
         estado.slidesData = item.slides;
         Object.assign(estado, item.config);
         renderSlides(item.slides, item.config.handle || '@suamarca');
-        switchTab('criar');
+        switchTab('gerar');
         initUI();
       }
     }

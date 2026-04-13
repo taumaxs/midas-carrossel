@@ -191,3 +191,31 @@
 .img-editor-wrapper.resizing {
   outline: 1px solid var(--accent);
 }
+
+
+/* CONTROLES DE SLIDE */
+.slide-controls {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 20;
+  flex-direction: row;
+}
+
+.slide-controls .btn-sm {
+  padding: 6px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.slide-controls .btn-dl {
+  position: static;
+  background: rgba(255, 85, 0, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-size: 11px;
+  padding: 6px 8px;
+  margin: 0;
+}

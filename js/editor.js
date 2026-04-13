@@ -111,11 +111,17 @@ const Editor = {
         <div class="ed-field">
           <label>Fonte</label>
           <select class="ed-font" data-target="fontFamily">
-            <option value="'Barlow Condensed', sans-serif">Barlow Condensed</option>
-            <option value="'Arial', sans-serif">Arial</option>
+            <option value="'Arial', sans-serif">Arial (padrão)</option>
             <option value="'Georgia', serif">Georgia</option>
+            <option value="'Playfair Display', serif">Playfair Display (elegante)</option>
+            <option value="'Montserrat', sans-serif">Montserrat (moderna)</option>
+            <option value="'Roboto', sans-serif">Roboto (limpa)</option>
+            <option value="'Poppins', sans-serif">Poppins (casual)</option>
+            <option value="'Inter', sans-serif">Inter (tech)</option>
+            <option value="'Ubuntu', sans-serif">Ubuntu (legível)</option>
+            <option value="'Lora', serif">Lora (sérif)</option>
+            <option value="'Barlow Condensed', sans-serif">Barlow Condensed</option>
             <option value="'Caveat', cursive">Caveat</option>
-            <option value="'Montserrat', sans-serif">Montserrat</option>
           </select>
         </div>
       `;
@@ -133,6 +139,22 @@ const Editor = {
         <div class="ed-field">
           <label>Cor</label>
           <input type="color" class="ed-color" value="${element.style.color || '#888888'}" data-target="color">
+        </div>
+        <div class="ed-field">
+          <label>Fonte</label>
+          <select class="ed-font" data-target="fontFamily">
+            <option value="'Arial', sans-serif">Arial (padrão)</option>
+            <option value="'Georgia', serif">Georgia</option>
+            <option value="'Playfair Display', serif">Playfair Display (elegante)</option>
+            <option value="'Montserrat', sans-serif">Montserrat (moderna)</option>
+            <option value="'Roboto', sans-serif">Roboto (limpa)</option>
+            <option value="'Poppins', sans-serif">Poppins (casual)</option>
+            <option value="'Inter', sans-serif">Inter (tech)</option>
+            <option value="'Ubuntu', sans-serif">Ubuntu (legível)</option>
+            <option value="'Lora', serif">Lora (sérif)</option>
+            <option value="'Barlow Condensed', sans-serif">Barlow Condensed</option>
+            <option value="'Caveat', cursive">Caveat</option>
+          </select>
         </div>
       `;
     }

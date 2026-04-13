@@ -486,6 +486,116 @@ function loadProject(id) {
 
 /**
  * FASE 1 - ADICIONAR ELEMENTOS PRONTOS (SEM GERAR COM IA)
+
+/**
+ * RENDERIZAR SLIDES NA ABA MANUAL
+ */
+function renderSlidesManual(d, handle = '@suamarca') {
+  const g = document.getElementById('manualSgrid');
+  if (!g) return;
+  
+  g.innerHTML = '';
+  const ar = arClass();
+  let idx = 0;
+  const total = (estado.incCapa ? 1 : 0) + estado.numSlides + (estado.incLike ? 1 : 0) + (estado.incCta ? 1 : 0);
+  
+  document.getElementById('manualOutN').textContent = total;
+  
+  // CAPA
+  if (estado.incCapa && d.capa) {
+    idx++;
+    const c = d.capa;
+    const bg = getBg(0);
+    g.innerHTML += slideWrap(idx, total, `
+      <div class="slide s-capa ${ar}">
+        ${bg}
+        <div class="ovl"></div>
+        <div class="topbar"><span>${handle}</span><span class="tmid">✦</span><span style="font-size:10px">2026</span></div>
+        <svg class="arr-svg" width="38" height="50" viewBox="0 0 38 50" fill="none">
+          <path d="M5 5 Q28 14 30 38" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".5"/>
+          <path d="M22 31 L30 38 L24 45" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
+        </svg>
+        <div class="body">
+          <div class="handle" contenteditable="true" spellcheck="false">${handle}</div>
+          <div class="h1" contenteditable="true" spellcheck="false">${c.p1}<br><span class="kw" contenteditable="true" spellcheck="false">${c.kw}</span></div>
+          <div class="sub" contenteditable="true" spellcheck="false">${c.sub}</div>
+        </div>
+      </div>
+    `, idx);
+  }
+  
+  // CONTEÚDO
+  if (d.slides) {
+    d.slides.forEach((s, i) => {
+      idx++;
+      const bg = getBg(idx - 1);
+      const hasImg = estado.fundo === 'up' && estado.imgs[idx - 1];
+      const stc = hasImg ? '#fff' : tc();
+      const smc = hasImg ? 'rgba(255,255,255,.65)' : mc();
+      
+      g.innerHTML += slideWrap(idx, total, `
+        <div class="slide s-cont ${ar}" style="background:${estado.fundo === 'cor' ? estado.fundoCor : '#0d0d0d'}">
+          ${bg}
+          ${hasImg ? '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.1) 60%);z-index:1"></div>' : ''}
+          <div class="bnum">${String(s.n).padStart(2, '0')}</div>
+          <div class="body">
+            <div class="stag" contenteditable="true" spellcheck="false">${s.tag}</div>
+            <div class="sline"></div>
+            <div class="stitle" style="color:${stc}" contenteditable="true" spellcheck="false">${s.titulo}</div>
+            <div class="sdesc" style="color:${smc}" contenteditable="true" spellcheck="false">${s.desc}</div>
+          </div>
+        </div>
+      `, idx);
+    });
+  }
+  
+  // LIKE
+  if (estado.incLike && d.like) {
+    idx++;
+    const lk = d.like;
+    const bg = getBg(idx - 1);
+    const hasImg = estado.fundo === 'up' && estado.imgs[idx - 1];
+    
+    g.innerHTML += slideWrap(idx, total, `
+      <div class="slide s-cta ${ar}" style="background:${estado.fundo === 'cor' ? estado.fundoCor : '#0d0d0d'}">
+        ${bg}
+        ${hasImg ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:1"></div>' : ''}
+        <div class="body">
+          <div class="cpre" contenteditable="true" spellcheck="false">${lk.pre}</div>
+          <div class="cmain" style="color:${hasImg ? '#fff' : tc()}" contenteditable="true" spellcheck="false">${lk.main}<br><span class="cred" contenteditable="true" spellcheck="false">${lk.destaque}</span></div>
+          <div class="cpill" contenteditable="true" spellcheck="false">${lk.pill}</div>
+          <div class="cbora">❤️</div>
+        </div>
+      </div>
+    `, idx);
+  }
+  
+  // CTA
+  if (estado.incCta && d.cta) {
+    idx++;
+    const ct = d.cta;
+    const bg = getBg(idx - 1);
+    const hasImg = estado.fundo === 'up' && estado.imgs[idx - 1];
+    
+    g.innerHTML += slideWrap(idx, total, `
+      <div class="slide s-cta ${ar}" style="background:${estado.fundo === 'cor' ? estado.fundoCor : '#0d0d0d'}">
+        ${bg}
+        ${hasImg ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:1"></div>' : ''}
+        <div class="body">
+          <div class="cpre" contenteditable="true" spellcheck="false">${ct.pre}</div>
+          <div class="cmain" style="color:${hasImg ? '#fff' : tc()}" contenteditable="true" spellcheck="false">${ct.l1}<br><span class="cred" contenteditable="true" spellcheck="false">${ct.l2}</span></div>
+          <div class="cpill" contenteditable="true" spellcheck="false">${ct.pill}</div>
+          <div class="cbora" contenteditable="true" spellcheck="false">${ct.fim} →</div>
+        </div>
+      </div>
+    `, idx);
+  }
+  
+  document.getElementById('manualOutArea').style.display = 'block';
+}
+
+/**
+ * FASE 1 - ADICIONAR ELEMENTOS PRONTOS (SEM GERAR COM IA)
  */
 
 // Inicializar estado de slides vazios
@@ -512,8 +622,8 @@ function adicionarCapaPronta() {
   updateToggles();
   updateTotal();
   
-  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderSlidesManual(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Capa adicionada!');
   saveState();
 }
@@ -532,8 +642,8 @@ function adicionarTexto() {
   estado.slidesData.slides.push(novoSlide);
   updateTotal();
   
-  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderSlidesManual(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de texto adicionado!');
   saveState();
 }
@@ -552,8 +662,8 @@ function adicionarImagem() {
   estado.slidesData.slides.push(novoSlide);
   updateTotal();
   
-  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderSlidesManual(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide com imagem adicionado!');
   saveState();
 }
@@ -572,7 +682,7 @@ function adicionarHandle() {
   const handle = estado.slidesData.handle.handle;
   const ar = arClass();
   
-  const g = document.getElementById('sgrid');
+  const g = document.getElementById('manualSgrid');
   if (!g.innerHTML.includes('slide-handle')) {
     const slideHTML = `<div class="swrap" id="slide-handle">
       <div class="slide-badge">Handle</div>
@@ -592,8 +702,8 @@ function adicionarHandle() {
     g.innerHTML = slideHTML + g.innerHTML;
   }
   
-  document.getElementById('outArea').style.display = 'block';
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('manualOutArea').style.display = 'block';
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de Handle/Marca adicionado!');
   saveState();
 }
@@ -621,8 +731,8 @@ function adicionarCTA() {
   updateToggles();
   updateTotal();
   
-  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderSlidesManual(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ CTA adicionado!');
   saveState();
 }
@@ -642,8 +752,8 @@ function adicionarLike() {
   updateToggles();
   updateTotal();
   
-  renderSlides(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
-  document.getElementById('outArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderSlidesManual(estado.slidesData, document.getElementById('handle').value.trim() || '@suamarca');
+  document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de Like adicionado!');
   saveState();
 }
@@ -660,11 +770,18 @@ function limparSlides() {
     updateToggles();
     updateTotal();
     
-    const g = document.getElementById('sgrid');
-    if (g) g.innerHTML = '';
+    // Limpar ambas as abas
+    const g1 = document.getElementById('sgrid');
+    if (g1) g1.innerHTML = '';
     
-    const outArea = document.getElementById('outArea');
-    if (outArea) outArea.style.display = 'none';
+    const g2 = document.getElementById('manualSgrid');
+    if (g2) g2.innerHTML = '';
+    
+    const outArea1 = document.getElementById('outArea');
+    if (outArea1) outArea1.style.display = 'none';
+    
+    const outArea2 = document.getElementById('manualOutArea');
+    if (outArea2) outArea2.style.display = 'none';
     
     showSuccess('✓ Slides limpos!');
     saveState();
