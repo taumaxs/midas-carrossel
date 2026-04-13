@@ -382,8 +382,59 @@ function slideWrap(idx, total, inner, n) {
   return `<div class="swrap" id="slide-wrap-${n}">
     <div class="slide-badge">${idx} / ${total}</div>
     ${inner}
-    <button class="btn-dl" onclick="dlSlide(${n})" title="Baixar slide em PNG">⬇ PNG</button>
+    <div class="slide-actions">
+      <button class="btn-dl" onclick="dlSlide(${n})" title="Baixar slide em PNG">⬇ PNG</button>
+      <button class="btn-dl btn-delete-slide" onclick="deleteSlideWithConfirm(${n})" title="Deletar este slide">🗑 Deletar</button>
+    </div>
   </div>`;
+}
+
+/**
+ * Deletar slide com confirmação
+ */
+function deleteSlideWithConfirm(slideIndex) {
+  if (confirm('⚠️ Tem certeza que quer deletar este slide? Esta ação não pode ser desfeita.')) {
+    deleteSlide(slideIndex);
+  }
+}
+
+/**
+ * Deletar slide
+ */
+function deleteSlide(slideIndex) {
+  if (!estado.slidesData || !estado.slidesData.slides) return;
+  
+  // Remover o slide do array
+  const slideNum = slideIndex - (estado.incCapa ? 2 : 1);
+  
+  if (slideNum >= 0 && slideNum < estado.slidesData.slides.length) {
+    estado.slidesData.slides.splice(slideNum, 1);
+    
+    // Re-numerar os slides
+    estado.slidesData.slides.forEach((slide, idx) => {
+      slide.n = idx + 1;
+    });
+    
+    updateTotal();
+    
+    // Re-renderizar
+    const handle = document.getElementById('handle').value.trim() || '@suamarca';
+    renderSlidesManual(estado.slidesData, handle);
+    renderSlides(estado.slidesData, handle);
+    
+    // Fechar editor se aberto
+    if (typeof Editor !== 'undefined' && Editor.closePanel) {
+      Editor.closePanel();
+    }
+    
+    // Salvar histórico
+    if (typeof History !== 'undefined') {
+      History.saveState('Slide ' + slideIndex + ' deletado');
+    }
+    
+    saveState();
+    showSuccess('✓ Slide deletado!');
+  }
 }
 
 /**
@@ -626,6 +677,11 @@ function adicionarCapaPronta() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Capa adicionada!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Capa adicionada');
+  }
 }
 
 // Adicionar Slide de Texto
@@ -646,6 +702,11 @@ function adicionarTexto() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de texto adicionado!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Slide de texto adicionado');
+  }
 }
 
 // Adicionar Slide com Imagem
@@ -666,6 +727,11 @@ function adicionarImagem() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide com imagem adicionado!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Slide com imagem adicionado');
+  }
 }
 
 // Adicionar Handle/Marca
@@ -706,12 +772,22 @@ function adicionarHandle() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de Handle/Marca adicionado!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Slide de Handle/Marca adicionado');
+  }
 }
 
 function atualizarCorHandle(cor) {
   const slide = document.getElementById('slide-handle')?.querySelector('.slide');
   if (slide) {
     slide.style.background = cor;
+  }
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Cor do Handle alterada');
   }
 }
 
@@ -735,6 +811,11 @@ function adicionarCTA() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ CTA adicionado!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('CTA adicionado');
+  }
 }
 
 // Adicionar Like
@@ -756,6 +837,11 @@ function adicionarLike() {
   document.getElementById('manualOutArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showSuccess('✓ Slide de Like adicionado!');
   saveState();
+  
+  // Salvar histórico
+  if (typeof History !== 'undefined') {
+    History.saveState('Slide de Like adicionado');
+  }
 }
 
 // Limpar todos os slides

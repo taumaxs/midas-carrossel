@@ -15,12 +15,13 @@ const Export = {
       badge.style.display = 'none';
       buttons.forEach(b => b.style.display = 'none');
       
-      const canvas = await html2canvas(slideElement, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null
-      });
+       const canvas = await html2canvas(slideElement, {
+         scale: 3,
+         useCORS: true,
+         allowTaint: true,
+         backgroundColor: null,
+         logging: false
+       });
       
       // Restaurar elementos
       badge.style.display = '';
@@ -49,12 +50,13 @@ const Export = {
       
       badge.style.display = 'none';
       buttons.forEach(b => b.style.display = 'none');
-      
-      const canvas = await html2canvas(slideElement, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
+       const canvas = await html2canvas(slideElement, {
+         scale: 3,
+         useCORS: true,
+         allowTaint: true,
+         backgroundColor: '#ffffff',
+         logging: false
+       });
       });
       
       badge.style.display = '';
@@ -88,12 +90,13 @@ const Export = {
         const buttons = wrap.querySelectorAll('.btn-dl, .btn-edit');
         
         badge.style.display = 'none';
-        buttons.forEach(b => b.style.display = 'none');
-        
-        const canvas = await html2canvas(slide, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
+         const canvas = await html2canvas(slide, {
+           scale: 3,
+           useCORS: true,
+           allowTaint: true,
+           backgroundColor: null,
+           logging: false
+         });
           backgroundColor: null
         });
         
@@ -133,12 +136,13 @@ const Export = {
         const badge = wrap.querySelector('.slide-badge');
         const buttons = wrap.querySelectorAll('.btn-dl, .btn-edit');
         
-        badge.style.display = 'none';
-        buttons.forEach(b => b.style.display = 'none');
-        
-        const canvas = await html2canvas(slide, {
-          scale: 2,
-          useCORS: true,
+         const canvas = await html2canvas(slide, {
+           scale: 3,
+           useCORS: true,
+           allowTaint: true,
+           backgroundColor: formato === 'jpg' ? '#ffffff' : null,
+           logging: false
+         });
           allowTaint: true,
           backgroundColor: formato === 'jpg' ? '#ffffff' : null
         });

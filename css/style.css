@@ -962,3 +962,34 @@ input[type=file] {
 .footer span {
   color: var(--accent);
 }
+
+
+
+/* SLIDE ACTIONS */
+.slide-actions {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 50;
+}
+
+.btn-delete-slide {
+  background: #ff4444 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-delete-slide:hover {
+  background: #cc0000 !important;
+}
+
+/* SLIDE IMAGE ELEMENT */
+.slide-image-element {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.slide-image-element img {
+  image-rendering: crisp-edges;
+}

@@ -21,8 +21,13 @@
   <div class="wrap">
     <!-- HEADER -->
     <div class="hd">
-      <div class="hd-title">Gerador de <span>Carrossel</span></div>
-      <div class="hd-sub">IA integrada · Qualquer nicho</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div>
+          <div class="hd-title">Gerador de <span>Carrossel</span></div>
+          <div class="hd-sub">IA integrada · Qualquer nicho</div>
+        </div>
+        <button class="btn-sm" onclick="History.undo()" title="Desfazer (Ctrl+Z)" style="margin-left: auto;">↶ Voltar</button>
+      </div>
     </div>
     
     <!-- ERRO -->
@@ -261,6 +266,7 @@
   <script src="js/export.js"></script>
   <script src="js/ai-integration.js"></script>
   <script src="js/editor.js"></script>
+  <script src="js/history.js"></script>
   <script src="js/main.js"></script>
   
   <script>
