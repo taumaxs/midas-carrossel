@@ -92,52 +92,24 @@ const Editor = {
   /**
    * Construir painel de edição
    */
-   buildEditorPanel(element, tipo) {
-     const textContent = element.textContent;
-     const fontSize = element.style.fontSize || (tipo === 'titulo' ? '32px' : '13px');
-     const fontSizeNum = parseInt(fontSize);
-     const color = element.style.color || (tipo === 'titulo' ? '#ffffff' : '#888888');
-     const fontFamily = element.style.fontFamily || "'Arial', sans-serif";
-     
-     let html = '';
+  buildEditorPanel(element, tipo) {
+    const textContent = element.textContent;
+    const fontSize = element.style.fontSize || (tipo === 'titulo' ? '32px' : '13px');
+    const fontSizeNum = parseInt(fontSize);
+    const color = element.style.color || (tipo === 'titulo' ? '#ffffff' : '#888888');
+    const fontFamily = element.style.fontFamily || "'Arial', sans-serif";
+    
+    let html = '';
 
-     // SEÇÃO DE TEXTO
-     html += `
-       <div class="ed-section">
-         <div class="ed-section-label">📝 Conteúdo</div>
-         <div class="ed-field">
-           <label>Editar Texto</label>
-           <textarea class="ed-text" data-target="text">${textContent}</textarea>
-         </div>
-       </div>
-     `;
-
-     // SEÇÃO DE ADICIONAR IMAGEM AO SLIDE
-     const slide = element.closest('.slide');
-     if (slide) {
-       html += `
-         <div class="ed-section">
-           <div class="ed-section-label">🖼️ Imagem</div>
-           <div class="ed-field">
-             <label>Adicionar Imagem ao Slide</label>
-             <input type="file" accept="image/*" class="ed-image-upload" data-target="image">
-             <small style="color:#888; margin-top:8px; display:block;">Clique para selecionar uma imagem para inserir no slide</small>
-           </div>
-         </div>
-       `;
-     }
-
-     // SEÇÃO DE TAMANHO
-     html += `
-       <div class="ed-section">
-         <div class="ed-section-label">📏 Tamanho</div>
-         <div class="ed-field">
-           <label>Tamanho da Fonte</label>
-           <input type="range" class="ed-size" min="10" max="72" value="${fontSizeNum}" data-target="fontSize">
-           <div class="ed-field-value">${fontSizeNum}px</div>
-         </div>
-       </div>
-     `;
+    // SEÇÃO DE TEXTO
+    html += `
+      <div class="ed-section">
+        <div class="ed-section-label">📝 Conteúdo</div>
+        <div class="ed-field">
+          <label>Editar Texto</label>
+          <textarea class="ed-text" data-target="text">${textContent}</textarea>
+        </div>
+      </div>
     `;
 
     // SEÇÃO DE TAMANHO
@@ -210,206 +182,70 @@ const Editor = {
   /**
    * Anexar eventos do painel
    */
-   attachPanelEvents(element, tipo) {
-     const textField = document.querySelector('.ed-text');
-     const sizeField = document.querySelector('.ed-size');
-     const colorField = document.querySelector('.ed-color');
-     const fontField = document.querySelector('.ed-font');
+  attachPanelEvents(element, tipo) {
+    const textField = document.querySelector('.ed-text');
+    const sizeField = document.querySelector('.ed-size');
+    const colorField = document.querySelector('.ed-color');
+    const fontField = document.querySelector('.ed-font');
 
-     if (textField) {
-       textField.addEventListener('input', () => {
-         element.textContent = textField.value;
-         this.autoSave();
-       });
-       
-       // Salvar histórico ao terminar de editar
-       textField.addEventListener('blur', () => {
-         if (typeof History !== 'undefined') {
-           History.saveState('Texto alterado');
-         }
-       });
-     }
+    if (textField) {
+      textField.addEventListener('input', () => {
+        element.textContent = textField.value;
+        this.autoSave();
+      });
+      textField.addEventListener('blur', () => {
+        if (typeof History !== 'undefined') {
+          History.saveState('Texto alterado');
+        }
+      });
+    }
 
-     if (sizeField) {
-       sizeField.addEventListener('input', () => {
-         element.style.fontSize = sizeField.value + 'px';
-         const displayValue = document.querySelector('.ed-field-value');
-         if (displayValue) {
-           displayValue.textContent = sizeField.value + 'px';
-         }
-         this.autoSave();
-       });
-       
-       // Salvar histórico ao terminar de editar
-       sizeField.addEventListener('change', () => {
-         if (typeof History !== 'undefined') {
-           History.saveState('Tamanho alterado para ' + sizeField.value + 'px');
-         }
-       });
-     }
+    if (sizeField) {
+      sizeField.addEventListener('input', () => {
+        element.style.fontSize = sizeField.value + 'px';
+        const displayValue = document.querySelector('.ed-field-value');
+        if (displayValue) {
+          displayValue.textContent = sizeField.value + 'px';
+        }
+        this.autoSave();
+      });
+      sizeField.addEventListener('change', () => {
+        if (typeof History !== 'undefined') {
+          History.saveState('Tamanho alterado');
+        }
+      });
+    }
 
-     if (colorField) {
-       colorField.addEventListener('input', () => {
-         element.style.color = colorField.value;
-         
-         // Atualizar preview de cor
-         const swatch = document.getElementById('colorSwatch');
-         const hexDisplay = document.querySelector('.ed-color-hex');
-         if (swatch) swatch.style.background = colorField.value;
-         if (hexDisplay) hexDisplay.textContent = colorField.value.toUpperCase();
-         
-         this.autoSave();
-       });
-       
-       // Salvar histórico ao terminar
-       colorField.addEventListener('change', () => {
-         if (typeof History !== 'undefined') {
-           History.saveState('Cor alterada para ' + colorField.value);
-         }
-       });
-     }
+    if (colorField) {
+      colorField.addEventListener('input', () => {
+        element.style.color = colorField.value;
+        
+        // Atualizar preview de cor
+        const swatch = document.getElementById('colorSwatch');
+        const hexDisplay = document.querySelector('.ed-color-hex');
+        if (swatch) swatch.style.background = colorField.value;
+        if (hexDisplay) hexDisplay.textContent = colorField.value.toUpperCase();
+        
+        this.autoSave();
+      });
+      colorField.addEventListener('change', () => {
+        if (typeof History !== 'undefined') {
+          History.saveState('Cor alterada');
+        }
+      });
+    }
 
-     if (fontField) {
-       fontField.addEventListener('change', () => {
-         element.style.fontFamily = fontField.value;
-         this.autoSave();
-         
-         if (typeof History !== 'undefined') {
-           History.saveState('Fonte alterada');
-         }
-     }
-
-     // Adicionar imagem ao slide
-     const imageUpload = document.querySelector('.ed-image-upload');
-     if (imageUpload) {
-       imageUpload.addEventListener('change', (e) => {
-         if (e.target.files.length > 0) {
-           this.addImageToSlide(e.target.files[0]);
-         }
-       });
-     }
-   },
-
-   /**
-    * Adicionar imagem ao slide
-    */
-   addImageToSlide(file) {
-     const reader = new FileReader();
-     reader.onload = (e) => {
-       const slide = this.selectedElement.closest('.slide');
-       if (!slide) return;
-
-       // Criar elemento de imagem
-       const imgContainer = document.createElement('div');
-       imgContainer.className = 'slide-image-element';
-       imgContainer.style.cssText = `
-         position: absolute;
-         max-width: 200px;
-         max-height: 200px;
-         cursor: move;
-         border: 2px solid #FF5500;
-         border-radius: 8px;
-         overflow: hidden;
-         right: 20px;
-         top: 50%;
-         transform: translateY(-50%);
-         z-index: 10;
-       `;
-
-       const img = document.createElement('img');
-       img.src = e.target.result;
-       img.style.cssText = `
-         width: 100%;
-         height: 100%;
-         object-fit: cover;
-         display: block;
-       `;
-
-       const deleteBtn = document.createElement('button');
-       deleteBtn.innerHTML = '×';
-       deleteBtn.style.cssText = `
-         position: absolute;
-         top: 4px;
-         right: 4px;
-         background: #FF5500;
-         color: white;
-         border: none;
-         border-radius: 50%;
-         width: 24px;
-         height: 24px;
-         cursor: pointer;
-         font-size: 18px;
-         padding: 0;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         z-index: 20;
-       `;
-
-       deleteBtn.addEventListener('click', (e) => {
-         e.stopPropagation();
-         imgContainer.remove();
-         this.autoSave();
-         if (typeof History !== 'undefined') {
-           History.saveState('Imagem deletada');
-         }
-       });
-
-       // Fazer draggable
-       let isDragging = false;
-       let startX = 0;
-       let startY = 0;
-       let currentX = 0;
-       let currentY = 0;
-
-       imgContainer.addEventListener('mousedown', (e) => {
-         if (e.target === deleteBtn) return;
-         isDragging = true;
-         startX = e.clientX - currentX;
-         startY = e.clientY - currentY;
-         imgContainer.style.cursor = 'grabbing';
-       });
-
-       document.addEventListener('mousemove', (e) => {
-         if (!isDragging) return;
-         currentX = e.clientX - startX;
-         currentY = e.clientY - startY;
-         imgContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
-         imgContainer.style.position = 'absolute';
-         imgContainer.style.right = 'auto';
-         imgContainer.style.top = 'auto';
-       });
-
-       document.addEventListener('mouseup', () => {
-         if (isDragging) {
-           isDragging = false;
-           imgContainer.style.cursor = 'move';
-           this.autoSave();
-           if (typeof History !== 'undefined') {
-             History.saveState('Imagem movida');
-           }
-         }
-       });
-
-       imgContainer.appendChild(img);
-       imgContainer.appendChild(deleteBtn);
-
-       // Se o slide for posicionado relativamente, adicionar a imagem
-       if (slide.style.position !== 'relative') {
-         slide.style.position = 'relative';
-       }
-
-       slide.appendChild(imgContainer);
-
-       showSuccess('✓ Imagem adicionada!');
-       this.autoSave();
-       if (typeof History !== 'undefined') {
-         History.saveState('Imagem adicionada');
-       }
-     };
-     reader.readAsDataURL(file);
-   },
-   },
+    if (fontField) {
+      fontField.addEventListener('change', () => {
+        element.style.fontFamily = fontField.value;
+        this.autoSave();
+        
+        if (typeof History !== 'undefined') {
+          History.saveState('Fonte alterada');
+        }
+      });
+    }
+  },
 
   /**
    * Deletar elemento
