@@ -537,8 +537,6 @@ function loadProject(id) {
 
 /**
  * FASE 1 - ADICIONAR ELEMENTOS PRONTOS (SEM GERAR COM IA)
-
-/**
  * RENDERIZAR SLIDES NA ABA MANUAL
  */
 function renderSlidesManual(d, handle = '@suamarca') {
