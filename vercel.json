@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/gerar.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
